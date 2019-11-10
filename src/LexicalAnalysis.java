@@ -111,16 +111,13 @@ public class LexicalAnalysis {
             given.setTokenType(RawToken.TokenType.KEYWORD);
             tokens.add(given);
 
-        } else if (given.isLiteral()) {
-            given.setTokenType(RawToken.TokenType.LITERAL);
-
-            tokens.add(given);
         } else if (given.isIdentifier()) {
             given.setTokenType(RawToken.TokenType.IDENTIFIER);
             tokens.add(given);
 
         } else {
-            nonSupportedTokens.add(given);
+            given.setTokenType(RawToken.TokenType.LITERAL);
+            tokens.add(given);
         }
     }
 
@@ -149,31 +146,17 @@ public class LexicalAnalysis {
             la.classify(tok);
         }
 
-        if (!nonSupportedTokens.isEmpty()) {
-            System.out.println("Some tokens are missclassified. Look for the full report in lexerOutput.txt");
-            printWriter.println("Classified tokens: \n");
-            for (RawToken t : la.tokens) {
-                printWriter.println(t.line + " " + t.position + " " + t.val + " " + t.type);
-                printWriter.println("Misclassified tokens: \n");
-            }
-            for (RawToken y : la.nonSupportedTokens) {
-                printWriter.println(y.line + " " + y.position + " " + y.val);
+        System.out.println("Lexical analysis performed. Look for the full report in lexerOutput.txt");
 
-            }
-            return null;
-        } else {
-            System.out.println("Lexical analysis performed successfully. Look for the full report in lexerOutput.txt");
-
-            printWriter.println("Classified tokens: \n");
-            for (RawToken t : la.tokens) {
-                printWriter.println(t.line + " " + t.position + " " + t.val + " " + t.type);
-                printWriter.println("Misclassified tokens: \n");
-            }
-            printWriter.close();
-
-            return la.tokens;
+        printWriter.println("Classified tokens: \n");
+        for (RawToken t : la.tokens) {
+            printWriter.println(t.line + " " + t.position + " " + t.val + " " + t.type);
+            printWriter.println("Misclassified tokens: \n");
         }
+        printWriter.close();
 
+        return la.tokens;
 
     }
+
 }

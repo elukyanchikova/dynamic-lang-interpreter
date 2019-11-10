@@ -63,26 +63,7 @@ public class RawToken {
         return this.consistLegal();
     }
 
-    //TODO  add strings and reals
-    public Boolean isLiteral() {
-        //case string
-        //case real
-        //case integer
-        boolean isDouble = true;
-        if (String.valueOf(this.val).contains(".")) {
-            String[] tuple = this.val.split(".");
 
-            for (int j = 0; j < tuple.length; j++) {
-                for (int i = 0; i < tuple[j].length(); i++) {
-//                    if (!(48 <= ((int) (tuple[j].charAt(i))) <= 57)) {
-//
-//                    }
-                }
-            }
-
-
-        }
-    return null;}
     public Boolean isOperator() {
         return this.lexicalAnalysis.getOperatorsList().containsValue(this.val);
 

@@ -32,6 +32,8 @@ public class Main {
         if (inputFile.isEmpty()) {
             inputFile = "SamplePascal.pas";
         }
+
+        // Here we get all the tokens
         la.lexerGetTokens(inputFile, "Output.txt");
 
     }
