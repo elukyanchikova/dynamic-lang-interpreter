@@ -41,6 +41,7 @@ public class LexicalAnalysis {
             put(12, "]");
             put(13, ".)");
             put(14, "*)");
+            put(15,",");
         }
     };
     private HashMap<Integer, String> operatorsList = new HashMap<>() {
@@ -49,72 +50,46 @@ public class LexicalAnalysis {
             put(2, "-");
             put(3, "*");
             put(4, "/");
-            put(5, ":=");
-            put(6, "div");
-            put(7, "mod");
-            put(8, "and");
-            put(9, "or");
-            put(10, "not");
-            put(11, "xor");
-            put(12, "<>"); //not equal
-            put(13, "<");
-            put(14, ">");
-            put(15, "=");
-            put(16, "<=");
-            put(17, "=<");
-            put(18, ">=");
-            put(20, "=>");
-            put(21, "in");
+            put(5, "and");
+            put(6, "or");
+            put(7, "not");
+            put(8, "xor");
+            put(9, ":=");
+            put(10, "<");
+            put(11, ">");
+            put(12, "=");
+            put(13, "<=");
+            put(14, ">=");
+            put(15,"/=");
+            put(16,"is");
+            put(17, "=>");
         }
     };
     private HashMap<Integer, String> keywordsList = new HashMap<>() {
         {
-            put(1, "begin");
-            put(2, "boolean");
-            put(3, "break");
-            put(4, "byte");
-            put(5, "do");
-            put(6, "double");
-            put(7, "if");
-            put(8, "else");
-            put(9, "end");
-            put(10, "false");
-            put(11, "true");
-            put(12, "integer");
-            put(13, "longint");
-            put(17, "shortint");
-            put(14, "repeat");
-            put(15, "shr");
-            put(16, "single");
-            put(18, "then");
-            put(19, "until");
-            put(20, "word");
-            put(21, "program");
-            put(22, "while");
-            put(23, "var");
-            put(24, "downto");
-            put(25, "label");
-            put(26, "record");
-            put(27, "with");
-            put(28, "procedure");
-            put(29, "goto");
-            put(30, "packed");
-            put(31, "const");
-            put(32, "type");
-            put(33, "case");
-            put(34, "function");
-            put(35, "to");
-            put(36, "of");
-            put(37, "for");
-            put(38, "array");
-            put(39, "file");
-            put(40, "set");
-            put(41, "file");
-            put(42, "char");
-            put(43, "string");
-            put(44, "writeln");
-            put(45, "readln");
-
+            put(1, "var");
+            put(2, "empty");
+            put(3, "if");
+            put(4, "then");
+            put(5,"else");
+            put(6,"then");
+            put(7,"end");
+            put(8,"for");
+            put(9,"while");
+            put(10,"loop");
+            put(11,"in");
+            put(12,"return");
+            put(13,"print");
+            put(14,"int");
+            put(15,"real");
+            put(16,"bool");
+            put(17,"string");
+            put(18,"func");
+            put(19, "true");
+            put(20, "false");
+            put(21, "readInt");
+            put(22, "readReal");
+            put(23, "readString");
         }
     };
 
