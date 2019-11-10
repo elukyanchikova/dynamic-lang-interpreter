@@ -1,0 +1,36 @@
+{
+var a;
+var b := 3;
+var c := -5;
+var d := 35.80;
+a := b + 7;
+b := a * b;
+c := a / 2;
+d := b - a;
+
+if a = b then print a else return b + 1 end;
+
+var i;
+while true loop i := i + 1 end;
+
+return i;
+
+for i in 1..5 loop i := i + 2 end;
+
+func (x, y) is return x + y; end;
+
+func(x, y) => var z; x := x + y;
+
+var t := [];
+t[10] := 25;
+t[100] := func(x)=>x+1;
+t[1000] := {a:=1,b:=2.7};
+
+var t := {a:=1, b:=2, c};
+t := t + {d:=3};
+
+var x := t.b;
+
+var y1 := t.1;
+var y2 := t.3;
+}
