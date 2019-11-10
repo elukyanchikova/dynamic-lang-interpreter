@@ -88,7 +88,7 @@ public class Tokenizer {
                 }
 
                 if (Character.isDigit(read)) {
-                    if (prevState == states.WORD || prevState == states.NUMBER) {
+                    if (prevState == states.WORD || prevState == states.NUMBER || prevState == states.REAL_NUMBER) {
                         tokenBuf.append(read);
                     } else if (prevState == states.SUB) {
                         state = states.NUMBER;
@@ -159,7 +159,7 @@ public class Tokenizer {
 
                 if (read == '>') {
                     if (prevState == states.EQ){
-                        state = states.FUNASSIGN;
+                        state = states.FUN_ASSIGN;
                         tokenBuf.append(read);
                         flushTokenBuf(tokenBuf);
                     } else {
@@ -219,6 +219,7 @@ public class Tokenizer {
 
                 if (read == '.') {
                     if (prevState == states.NUMBER) {
+                        state = states.REAL_NUMBER;
                         tokenBuf.append(read);
                     } else if (prevState == states.WORD) {
                         state = states.REFERENCE;
@@ -259,8 +260,8 @@ public class Tokenizer {
     }
 
     private enum states {
-        WORD, STRING1, STRING2, NUMBER,
-        COLON, ASSIGN, FUNASSIGN, PERIOD, RANGE, REFERENCE,
+        WORD, STRING1, STRING2, NUMBER, REAL_NUMBER,
+        COLON, ASSIGN, FUN_ASSIGN, PERIOD, RANGE, REFERENCE,
         EQ, NE, LT, LE, GT, GE, MUL, DIV, SUB,
         BR_OPEN, BR_CLOSE,
         COMM_OPEN, COMM_CLOSE, COMM_LINE,
