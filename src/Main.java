@@ -32,7 +32,7 @@ public class Main {
         if (inputFile.isEmpty()) {
             inputFile = "SamplePascal.pas";
         }
-        la.performLexicalAnalysis(inputFile, "Output.txt");
+        la.lexerGetTokens(inputFile, "Output.txt");
 
     }
 

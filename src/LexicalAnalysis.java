@@ -8,20 +8,11 @@ import java.util.Scanner;
 
 public class LexicalAnalysis {
 
-    private ArrayList<RawToken> delimiters;
-    private ArrayList<RawToken> identifiers;
-    private ArrayList<RawToken> literals;
-    private ArrayList<RawToken> keywords;
-    private ArrayList<RawToken> operators;
+    private ArrayList<RawToken> tokens;
     private ArrayList<RawToken> nonSupportedTokens;
 
     public LexicalAnalysis() {
-
-        delimiters = new ArrayList<>();
-        identifiers = new ArrayList<>();
-        literals = new ArrayList<>();
-        keywords = new ArrayList<>();
-        operators = new ArrayList<>();
+        tokens = new ArrayList<>();
         nonSupportedTokens = new ArrayList<>();
     }
 
@@ -41,7 +32,7 @@ public class LexicalAnalysis {
             put(12, "]");
             put(13, ".)");
             put(14, "*)");
-            put(15,",");
+            put(15, ",");
         }
     };
     private HashMap<Integer, String> operatorsList = new HashMap<>() {
@@ -60,8 +51,8 @@ public class LexicalAnalysis {
             put(12, "=");
             put(13, "<=");
             put(14, ">=");
-            put(15,"/=");
-            put(16,"is");
+            put(15, "/=");
+            put(16, "is");
             put(17, "=>");
         }
     };
@@ -71,20 +62,20 @@ public class LexicalAnalysis {
             put(2, "empty");
             put(3, "if");
             put(4, "then");
-            put(5,"else");
-            put(6,"then");
-            put(7,"end");
-            put(8,"for");
-            put(9,"while");
-            put(10,"loop");
-            put(11,"in");
-            put(12,"return");
-            put(13,"print");
-            put(14,"int");
-            put(15,"real");
-            put(16,"bool");
-            put(17,"string");
-            put(18,"func");
+            put(5, "else");
+            put(6, "then");
+            put(7, "end");
+            put(8, "for");
+            put(9, "while");
+            put(10, "loop");
+            put(11, "in");
+            put(12, "return");
+            put(13, "print");
+            put(14, "int");
+            put(15, "real");
+            put(16, "bool");
+            put(17, "string");
+            put(18, "func");
             put(19, "true");
             put(20, "false");
             put(21, "readInt");
@@ -110,25 +101,30 @@ public class LexicalAnalysis {
     private void classify(RawToken given) {
 
         if (given.isDelimiter()) {
-            delimiters.add(given);
+            given.setTokenType(RawToken.TokenType.DELIMITER);
+            tokens.add(given);
 
         } else if (given.isOperator()) {
-            operators.add(given);
+            given.setTokenType(RawToken.TokenType.OPERATOR);
+            tokens.add(given);
         } else if (given.isKeyword()) {
-            keywords.add(given);
+            given.setTokenType(RawToken.TokenType.KEYWORD);
+            tokens.add(given);
 
         } else if (given.isLiteral()) {
-            literals.add(given);
+            given.setTokenType(RawToken.TokenType.LITERAL);
 
+            tokens.add(given);
         } else if (given.isIdentifier()) {
-            identifiers.add(given);
+            given.setTokenType(RawToken.TokenType.IDENTIFIER);
+            tokens.add(given);
 
         } else {
             nonSupportedTokens.add(given);
         }
     }
 
-    public void performLexicalAnalysis(String inputPath, String outputPath) throws IOException {
+    public ArrayList<RawToken> lexerGetTokens(String inputPath, String outputPath) throws IOException {
         //Open file
         InputStream fromFile = new FileInputStream(inputPath);
         Tokenizer tokenizer = new Tokenizer(fromFile);
@@ -150,52 +146,34 @@ public class LexicalAnalysis {
 
         LexicalAnalysis la = new LexicalAnalysis();
         for (RawToken tok : tokens) {
-            RawToken token = new RawToken(tok.val, tok.line, tok.position);
-            la.classify(token);
-        }
-        printWriter.println("Delimiters tokens: \n");
-        for (RawToken t : la.delimiters) {
-            printWriter.println(t.line + " " + t.position + " " + t.val);
-            //printWriter.println(t.line +" " + t.place_at_line + " " + t.name + " " + t.type);
-        }
-        printWriter.println();
-        printWriter.println("Literals tokens: \n");
-        for (RawToken t : la.literals) {
-            printWriter.println(t.line + " " + t.position + " " + t.val);
-
-            //printWriter.println(t.line +" " + t.place_at_line + " " + t.name + " " + t.type);
-        }
-        printWriter.println();
-        printWriter.println("Operators tokens: \n");
-        for (RawToken t : la.operators) {
-            //printWriter.println(t.line +" " + t.place_at_line + " " + t.name + " " + t.type);
-            printWriter.println(t.line + " " + t.position + " " + t.val);
-
-        }
-        printWriter.println();
-        printWriter.println("Keywords tokens: \n");
-        for (RawToken t : la.keywords) {
-
-            printWriter.println(t.line + " " + t.position+ " " + t.val);
-            //printWriter.println(t.line +" " + t.place_at_line + " " + t.name + " " + t.type);
-        }
-        printWriter.println();
-        printWriter.println("Identifiers tokens: \n");
-        for (RawToken t : la.identifiers) {
-            printWriter.println(t.line + " " + t.position + " " + t.val);
-
-//            printWriter.println(t.line +" " + t.place_at_line + " " + t.name + " " + t.type);
-        }
-        printWriter.println();
-        printWriter.println("Not defined tokens: \n");
-        for (RawToken t : la.nonSupportedTokens) {
-            printWriter.println(t.line + " " + t.position + " " + t.val);
+            la.classify(tok);
         }
 
-        printWriter.println("\nLexical analysis DONE");
-        System.out.println("Lexical analysis DONE \n\nlook for the results in \'" + outputPath + "\'");
-        printWriter.close();
+        if (!nonSupportedTokens.isEmpty()) {
+            System.out.println("Some tokens are missclassified. Look for the full report in lexerOutput.txt");
+            printWriter.println("Classified tokens: \n");
+            for (RawToken t : la.tokens) {
+                printWriter.println(t.line + " " + t.position + " " + t.val + " " + t.type);
+                printWriter.println("Misclassified tokens: \n");
+            }
+            for (RawToken y : la.nonSupportedTokens) {
+                printWriter.println(y.line + " " + y.position + " " + y.val);
+
+            }
+            return null;
+        } else {
+            System.out.println("Lexical analysis performed successfully. Look for the full report in lexerOutput.txt");
+
+            printWriter.println("Classified tokens: \n");
+            for (RawToken t : la.tokens) {
+                printWriter.println(t.line + " " + t.position + " " + t.val + " " + t.type);
+                printWriter.println("Misclassified tokens: \n");
+            }
+            printWriter.close();
+
+            return la.tokens;
+        }
+
 
     }
-
 }

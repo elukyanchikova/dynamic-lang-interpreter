@@ -1,11 +1,14 @@
+import javax.xml.stream.FactoryConfigurationError;
+import java.lang.Number;
+
 public class RawToken {
-    
+
     public String val;
     public int line, position;
     public TokenType type;
     private LexicalAnalysis lexicalAnalysis = new LexicalAnalysis();
 
-    private enum TokenType {
+    protected enum TokenType {
         DELIMITER,
         IDENTIFIER,
         LITERAL,
@@ -30,16 +33,12 @@ public class RawToken {
 
     }
 
-    private void setTokenType(TokenType tokenType) {
+    protected void setTokenType(TokenType tokenType) {
         this.type = tokenType;
     }
 
     public Boolean isDelimiter() {
-        if (this.lexicalAnalysis.getDelimitersList().containsValue(this.val)) {
-            setTokenType(TokenType.DELIMITER);
-            return true;
-        }
-        return false;
+        return this.lexicalAnalysis.getDelimitersList().containsValue(this.val);
     }
 
     private Boolean consistLegal() {
@@ -61,38 +60,36 @@ public class RawToken {
     }
 
     public Boolean isIdentifier() {
-        if (this.consistLegal()
-        ) {
-            setTokenType(TokenType.IDENTIFIER);
-            return true;
-        } else return false;
-    }
- //TODO  add strings and reals
-    public Boolean isLiteral() {
-        try {
-            Integer.parseInt(this.val);
-            setTokenType(TokenType.LITERAL);
-            return true;
-        } catch (NumberFormatException ex) {
-            return false;
-        }
+        return this.consistLegal();
     }
 
-    public Boolean isOperator() {
-        if (this.lexicalAnalysis.getOperatorsList().containsValue(this.val)) {
-            setTokenType(TokenType.OPERATOR);
-            return true;
+    //TODO  add strings and reals
+    public Boolean isLiteral() {
+        //case string
+        //case real
+        //case integer
+        boolean isDouble = true;
+        if (String.valueOf(this.val).contains(".")) {
+            String[] tuple = this.val.split(".");
+
+            for (int j = 0; j < tuple.length; j++) {
+                for (int i = 0; i < tuple[j].length(); i++) {
+//                    if (!(48 <= ((int) (tuple[j].charAt(i))) <= 57)) {
+//
+//                    }
+                }
+            }
+
+
         }
-        return false;
+    return null;}
+    public Boolean isOperator() {
+        return this.lexicalAnalysis.getOperatorsList().containsValue(this.val);
 
     }
 
     public Boolean isKeyword() {
-        if (this.lexicalAnalysis.getKeywordsList().containsValue(this.val)) {
-            setTokenType(TokenType.KEYWORD);
-            return true;
-        }
-        return false;
+        return this.lexicalAnalysis.getKeywordsList().containsValue(this.val);
     }
 
 }
