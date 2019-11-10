@@ -70,26 +70,25 @@ public class Tokenizer {
                 }
 
                 if (Character.isLetter(read) || read == '_') {
-                    if (prevState != states.REFERENCE) {
-                        state = states.WORD;
+                    state = states.WORD;
 
-                        if (prevState == states.NUMBER) {
-                            if (tokenBuf.length() > 1 && tokenBuf.charAt(0) == '-') {
-                                tokenBuf.deleteCharAt(0);
-                                tokens.add(new RawToken('-', nLine, nPlace));
-                                nPlace++;
-                            }
-                        } else if (prevState != states.WORD) {
-                            flushTokenBuf(tokenBuf);
+                    if (prevState == states.NUMBER) {
+                        if (tokenBuf.length() > 1 && tokenBuf.charAt(0) == '-') {
+                            tokenBuf.deleteCharAt(0);
+                            tokens.add(new RawToken('-', nLine, nPlace));
+                            nPlace++;
                         }
+                    } else if (prevState != states.WORD) {
+                        flushTokenBuf(tokenBuf);
                     }
 
                     tokenBuf.append(read);
+
                     break;
                 }
 
                 if (Character.isDigit(read)) {
-                    if (prevState == states.WORD || prevState == states.NUMBER || prevState == states.REFERENCE) {
+                    if (prevState == states.WORD || prevState == states.NUMBER) {
                         tokenBuf.append(read);
                     } else if (prevState == states.SUB) {
                         state = states.NUMBER;
@@ -138,6 +137,10 @@ public class Tokenizer {
                         state = states.GE;
                         tokenBuf.append(read);
                         flushTokenBuf(tokenBuf);
+                    } else if (prevState == states.DIV) {
+                        state = states.NE;
+                        tokenBuf.append(read);
+                        flushTokenBuf(tokenBuf);
                     } else {
                         flushTokenBuf(tokenBuf);
                         tokens.add(new RawToken(read, nLine, nPlace));
@@ -155,12 +158,12 @@ public class Tokenizer {
                 }
 
                 if (read == '>') {
-                    state = states.GT;
-                    if (prevState == states.LT) {
-                        state = states.NE;
+                    if (prevState == states.EQ){
+                        state = states.FUNASSIGN;
                         tokenBuf.append(read);
                         flushTokenBuf(tokenBuf);
                     } else {
+                        state = states.GT;
                         flushTokenBuf(tokenBuf);
                         tokenBuf.append(read);
                     }
@@ -257,7 +260,7 @@ public class Tokenizer {
 
     private enum states {
         WORD, STRING1, STRING2, NUMBER,
-        COLON, ASSIGN, PERIOD, RANGE, REFERENCE,
+        COLON, ASSIGN, FUNASSIGN, PERIOD, RANGE, REFERENCE,
         EQ, NE, LT, LE, GT, GE, MUL, DIV, SUB,
         BR_OPEN, BR_CLOSE,
         COMM_OPEN, COMM_CLOSE, COMM_LINE,
