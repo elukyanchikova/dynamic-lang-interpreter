@@ -1,13 +1,42 @@
 package entities;
 
 public class ForLoop extends Loop {
-    Identifier counter;
-    Range range;
-    Body body;
+    private Identifier mCounter;
+    private Range mRange;
+    private Body mBody;
 
-    ForLoop(Identifier counter, Range range, Body body) {
-        this.counter = counter;
-        this.range = range;
-        this.body = body;
+    public ForLoop(Body body, Range range, Identifier counter) {
+        this.mCounter = counter;
+        this.mRange = range;
+        this.mBody = body;
+    }
+
+    public ForLoop(Body body, Range range) {
+        this(body, range, null);
+    }
+
+    public ForLoop(Body body) {
+        this(body, null, null);
+    }
+
+    /**
+     * @return the counter
+     */
+    public Identifier getCounter() {
+        return mCounter;
+    }
+
+    /**
+     * @return the range
+     */
+    public Range getRange() {
+        return mRange;
+    }
+
+    /**
+     * @return the body
+     */
+    public Body getBody() {
+        return mBody;
     }
 }

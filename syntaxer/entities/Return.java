@@ -1,9 +1,16 @@
 package entities;
 
-public class Return {
-    Expression expression;
+public class Return extends Statement {
+    private Expression mExpression;
 
-    Return(Expression expression) {
+    public Return(Expression expression) {
         this.expression = expression;
+    }
+
+    /**
+     * @return the expression
+     */
+    public Expression getExpression() {
+        return mExpression;
     }
 }

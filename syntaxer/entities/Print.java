@@ -1,9 +1,21 @@
 package entities;
 
-public class Print {
-    Expression expression;
+public class Print extends Statement {
+    private List<Expression> mExpressions;
 
-    Print(Expression expression) {
-        this.expression = expression;
+    public Print(Expression expression) {
+        this.mExpressions = new ArrayList<>();
+        addExpression(expression);
+    }
+
+    public void addExpression(Expression expression) {
+        this.mExpressions.add(expression);
+    }
+
+    /**
+     * @return the expressions
+     */
+    public List<Expression> getExpressions() {
+        return mExpressions;
     }
 }
