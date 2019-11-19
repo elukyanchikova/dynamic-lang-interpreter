@@ -7,7 +7,7 @@ public class Factor {
     List<Term> termList;
     List<ArithmeticOperator> arithmeticOperatorList;
 
-    Factor(Term term) {
+    public Factor(Term term) {
         termList = new ArrayList<>();
         arithmeticOperatorList = new ArrayList<>();
         addTerm(term, ArithmeticOperator.NONE);

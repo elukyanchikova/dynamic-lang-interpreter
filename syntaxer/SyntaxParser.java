@@ -191,6 +191,7 @@ public class SyntaxParser {
                     result.addExpression(expression);
                 }
             }
+            revertTokenPosition();
             return result;
         }
     }
@@ -201,25 +202,147 @@ public class SyntaxParser {
         if (token.isIdentifier()) {
             Identifier identifier = new Identifier(token.val);
             VariableDefinition result = new VariableDefinition(identifier);
-            if (getToken(mTokenPosition).equals(":=")) {
+            if (getNextToken().equals(":=")) {
                 Expression expression = parseExpression();
                 result.setExpression(expression);
+            } else {
+                revertTokenPosition();
             }
             return result;
         } else {
+            revertTokenPosition();
             return null;
         }
     }
 
     private Reference parseReference() {
+        // TODO: parse reference
         return null;
     }
 
     private Expression parseExpression() {
+        Relation relation = parseRelation();
+        if(relation == null) {
+            return null;
+        } else {
+            Expression result = new Expression(relation);
+            String operator = getNextToken();
+            while(operator.equals("or") || operator.equals("and") || operator.equals("xor")) {
+                relation = parseRelation();
+                switch (operator) {
+                    case "xor": result.addRelation(relation, LogicalOperator.XOR);
+                    case "and": result.addRelation(relation, LogicalOperator.AND);
+                    case "or": result.addRelation(relation, LogicalOperator.OR);
+                    operator = getNextToken();
+                }
+            }
+            revertTokenPosition();
+            return result;
+        }
+    }
+
+    private Relation parseRelation() {
+        /* Relation: Factor [ ( '<'|'<='|'>'|'>='|'='|'/=' Factor ] ) */
+        Factor firstFactor = parseFactor();
+        if(firstFactor == null) {
+            return null;
+        } else {
+            String operator = getNextToken();
+            Factor secondFactor = parseFactor();
+            if (isRelationOperator(operator)) {
+                switch (operator) {
+                    case "<":  return new Relation(firstFactor, RelationOperator.LESS, secondFactor);
+                    case "<=": return new Relation(firstFactor, RelationOperator.LESS_EQ, secondFactor);
+                    case ">":  return new Relation(firstFactor, RelationOperator.GREATER, secondFactor);
+                    case ">=": return new Relation(firstFactor, RelationOperator.GREATER_EQ, secondFactor);
+                    case "=":  return new Relation(firstFactor, RelationOperator.EQUAL, secondFactor);
+                    case "/=": return new Relation(firstFactor, RelationOperator.NOT_EQUAL, secondFactor);
+                }
+            } else {
+                revertTokenPosition();
+                return new Relation(firstFactor);
+            }
+        }
+    }
+
+    private Factor parseFactor() {
+        /* Factor : Term { [ '+' | '-' ] Term } */
+        Term term = parseTerm();
+        if (term == null) {
+            return null;
+        } else {
+            Factor result = new Factor(term);
+            String operator = getNextToken();
+            while (isFactorSign(operator)) {
+                term = parseTerm();
+                switch (operator) {
+                    case "+": result.addTerm(term, ArithmeticOperator.ADD);
+                    case "-": result.addTerm(term, ArithmeticOperator.SUB);
+                }
+                operator = getNextToken();
+            }
+            revertTokenPosition();
+            return result;
+        }
+    }
+
+    private Term parseTerm() {
+        /* Term : Unary { ( '*' | '/' ) Unary } */
+        Unary unary = parseUnary();
+        if (unary == null) {
+            return null;
+        } else {
+            Term result = new Term(unary);
+            String operator = getNextToken();
+            while (isTermSign(operator)) {
+                unary = parseUnary();
+                switch (operator) {
+                    case "*": result.addUnary(unary, MultiplicationOperator.MUL);
+                    case "/": result.addUnary(unary, MultiplicationOperator.DIV);
+                }
+                operator = getNextToken();
+            }
+            revertTokenPosition();
+            return result;
+        }
+    }
+
+    private Unary parseUnary() {
+        // TODO: Unary parsing
         return null;
     }
 
     private Body parseBody() {
-        return null;
+        /* Body : { Statement } */
+        Statement statement = parseStatement();
+        if (statement == null) {
+            return null;
+        } else {
+            Body result = new Body(statement);
+            while (true) {
+                statement = parseStatement();
+                if(statement != null) {
+                    result.addStatement(statement);
+                } else {
+                    return result;
+                    // #TODO: handle syntax error
+                }
+            }
+        }
     }
+
+    private static boolean isRelationOperator(String operator) {
+        return operator.equals("<") || operator.equals("<=") ||
+                operator.equals(">") || operator.equals(">=") ||
+                operator.equals("=") || operator.equals("/=");
+    }
+
+    private boolean isTermSign(String operator) {
+        return operator.equals("*") || operator.equals("/");
+    }
+
+    private boolean isFactorSign(String operator) {
+        return operator.equals("+") || operator.equals("-");
+    }
+
 }
