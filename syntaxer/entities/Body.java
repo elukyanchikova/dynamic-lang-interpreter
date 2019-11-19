@@ -10,7 +10,7 @@ public class Body {
         statementList = new ArrayList<>();
     }
 
-    Body(Statement statement) {
+    public Body(Statement statement) {
         statementList = new ArrayList<>();
         addStatement(statement);
     }
