@@ -1,5 +1,8 @@
 package entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Print extends Statement {
     private List<Expression> mExpressions;
 

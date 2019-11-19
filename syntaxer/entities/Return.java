@@ -1,7 +1,7 @@
 package entities;
 
 public class Return extends Statement {
-    private Expression mExpression;
+    private Expression expression;
 
     public Return(Expression expression) {
         this.expression = expression;
@@ -11,6 +11,6 @@ public class Return extends Statement {
      * @return the expression
      */
     public Expression getExpression() {
-        return mExpression;
+        return expression;
     }
 }

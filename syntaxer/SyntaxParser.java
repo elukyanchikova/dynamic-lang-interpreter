@@ -1,5 +1,9 @@
 import entities.*;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 public class SyntaxParser {
     private String mInputPath;
     private List<RawToken> mTokens;
@@ -7,9 +11,10 @@ public class SyntaxParser {
 
     public SyntaxParser(String inputPath) {
         this.mInputPath = inputPath;
+        this.mTokens = new ArrayList<>();
     }
 
-    public Program parse() {
+    public Program parse() throws IOException {
         /* Call lexer to get tokens */
         prepareTokens();
 
@@ -23,18 +28,26 @@ public class SyntaxParser {
         return program;
     }
 
-    private void prepareTokens() {
+    private void prepareTokens() throws IOException {
         LexicalAnalysis lexer = new LexicalAnalysis();
         mTokens = lexer.lexerGetTokens(mInputPath, ".temp");
         mTokenPosition = -1;
     }
 
     private String getToken(int position) {
-        return mTokens[position].val;
+        return mTokens.get(position).val;
+    }
+
+    private RawToken getRawToken(int position) {
+        return mTokens.get(position);
     }
 
     private String getNextToken() {
         return getToken(mTokenPosition++);
+    }
+
+    private RawToken getNextRawToken() {
+        return getRawToken(mTokenPosition++);
     }
 
     private void revertTokenPosition() {
@@ -83,23 +96,22 @@ public class SyntaxParser {
 
     private If parseIf() {
         /* Conditional starts with `if` */
-        if (!getNextToken.equals("if")) return null;
-
+        if (getNextToken().equals("if")) return null;
         Expression condition = parseExpression();
 
         /* Check for `then` */
-        if (!getNextToken.equals("then")) return null;
+        if (!getNextToken().equals("then")) return null;
 
         Body body = parseBody();
 
         /* Check for `else` */
         Body elseBody = null;
-        if (getNextToken.equals("else")) {
+        if (getNextToken().equals("else")) {
             elseBody = parseBody();
         } else revertTokenPosition();
 
         /* Check for end */
-        if (!getNextToken.equals("end")) return null;
+        if (!getNextToken().equals("end")) return null;
 
         return new If(condition, body, elseBody);
     }
@@ -155,15 +167,48 @@ public class SyntaxParser {
     }
 
     private Return parseReturn() {
-        return null;
+        /* Return : return [ Expression ] */
+        Expression expression = parseExpression();
+        if (expression == null) {
+            return null;
+        } else {
+            return new Return(expression);
+        }
     }
 
     private Print parsePrint() {
-        return null;
+        /* Print : print Expression { ',' Expression } */
+        Expression expression = parseExpression();
+        if (expression == null) {
+            return null;
+        } else {
+            Print result = new Print(expression);
+            while (getNextToken().equals(",")) {
+                expression = parseExpression();
+                if (expression == null) {
+                    break;
+                } else {
+                    result.addExpression(expression);
+                }
+            }
+            return result;
+        }
     }
 
     private VariableDefinition parseVariableDefinition() {
-        return null;
+        /* VariableDefinition : IDENT [ ':=' Expression ] */
+        RawToken token = getNextRawToken();
+        if (token.isIdentifier()) {
+            Identifier identifier = new Identifier(token.val);
+            VariableDefinition result = new VariableDefinition(identifier);
+            if (getToken(mTokenPosition).equals(":=")) {
+                Expression expression = parseExpression();
+                result.setExpression(expression);
+            }
+            return result;
+        } else {
+            return null;
+        }
     }
 
     private Reference parseReference() {

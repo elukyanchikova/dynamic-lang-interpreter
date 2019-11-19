@@ -4,7 +4,7 @@ public class VariableDefinition extends Statement {
     private Identifier mIdentifier;
     private Expression mExpression;
 
-    VariableDefinition(Identifier identifier) {
+    public VariableDefinition(Identifier identifier) {
         this.mIdentifier = identifier;
         this.mExpression = new Expression(new Relation(new Factor(new Term(new EmptyLiteral()))));
     }
