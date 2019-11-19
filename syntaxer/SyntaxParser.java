@@ -258,10 +258,9 @@ public class SyntaxParser {
                     case "=":  return new Relation(firstFactor, RelationOperator.EQUAL, secondFactor);
                     case "/=": return new Relation(firstFactor, RelationOperator.NOT_EQUAL, secondFactor);
                 }
-            } else {
-                revertTokenPosition();
-                return new Relation(firstFactor);
             }
+            revertTokenPosition();
+            return new Relation(firstFactor);
         }
     }
 
