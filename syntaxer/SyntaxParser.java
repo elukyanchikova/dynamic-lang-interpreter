@@ -352,6 +352,7 @@ public class SyntaxParser {
     }
 
     private Primary parsePrimary() {
+        /* Primary : Reference | Literal | '(' Expression ')' */
         RawToken token = getNextRawToken();
         if (token.type == RawToken.TokenType.IDENTIFIER) {
             revertTokenPosition();
@@ -366,7 +367,38 @@ public class SyntaxParser {
     }
 
     private FunctionalLiteral parseFunctionalLiteral() {
-        return null;
+        /* FunctionLiteral : func [ '(' IDENT { ',' IDENT } ')' ] FunBody */
+        RawToken token = getNextRawToken();
+        if (!token.val.equals("(")) return null;
+        token = getNextRawToken();
+        if (token.type != RawToken.TokenType.IDENTIFIER) return null;
+        FunctionalLiteral result = new FunctionalLiteral(new Identifier(token.val));
+        token = getNextRawToken();
+        while (token.val.equals(",")) {
+            token = getNextRawToken();
+            if (token.type != RawToken.TokenType.IDENTIFIER) return null;
+            result.addArgument(new Identifier(token.val));
+        }
+        if (!token.val.equals(")")) return null;
+        token = getNextRawToken();
+
+        // parseFunctionBody();
+        /* FunBody : is Body end | => Expression */
+        if (token.val.equals("is")) {
+            Body body = parseBody();
+            if (body == null) return null;
+            result.setFunctionBody(new BodyFunctionBody(body));
+            token = getNextRawToken();
+            if (!token.val.equals("end")) return null;
+            return result;
+        } else if (token.val.equals(">=")){
+            Expression expression = parseExpression();
+            if (expression == null) return null;
+            result.setFunctionBody(new LambdaFunction(expression));
+            return result;
+        } else {
+            return null;
+        }
     }
 
     private Literal parseLiteral() {

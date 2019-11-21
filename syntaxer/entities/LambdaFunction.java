@@ -3,7 +3,7 @@ package entities;
 public class LambdaFunction extends FunctionBody {
     Expression expression;
 
-    LambdaFunction(Expression expression) {
+    public LambdaFunction(Expression expression) {
         this.expression = expression;
     }
 }
