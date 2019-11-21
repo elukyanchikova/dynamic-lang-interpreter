@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Program {
-    private List<Statement> mStatements;
+    private List<Statement> statements;
 
     public Program() {
-        this.mStatements = new ArrayList<>();
+        this.statements = new ArrayList<>();
     }
 
     public void addStatement(Statement statement) {
-        this.mStatements.add(statement);
+        this.statements.add(statement);
     }
 
-    public List<Statement> getDeclarations() {
-        return this.mStatements;
+    public List<Statement> getStatements() {
+        return this.statements;
     }
 }

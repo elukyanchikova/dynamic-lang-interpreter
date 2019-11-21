@@ -24,21 +24,27 @@ public class SyntaxParser {
         while ((statement = parseStatement()) != null) {
             program.addStatement(statement);
         }
-
+        if (mTokenPosition >= mTokens.size()) {
+            System.out.println("Syntax analyzing finished");
+        } else {
+            System.out.println("Syntax error");
+        }
         return program;
     }
 
     private void prepareTokens() throws IOException {
         LexicalAnalysis lexer = new LexicalAnalysis();
         mTokens = lexer.lexerGetTokens(mInputPath, ".temp");
-        mTokenPosition = -1;
+        mTokenPosition = 0;
     }
 
     private String getToken(int position) {
+        if (position >= mTokens.size()) return null;
         return mTokens.get(position).val;
     }
 
     private RawToken getRawToken(int position) {
+        if (position >= mTokens.size()) return null;
         return mTokens.get(position);
     }
 
@@ -66,7 +72,6 @@ public class SyntaxParser {
         if (result == null) result = parseLoop();
         if (result == null) result = parsePrint();
         if (result == null) result = parseReturn();
-
         return result;
     }
 
@@ -95,23 +100,27 @@ public class SyntaxParser {
     }
 
     private If parseIf() {
+        String token = getNextToken();
         /* Conditional starts with `if` */
-        if (getNextToken().equals("if")) return null;
+        if (token == null || !token.equals("if")) return null;
         Expression condition = parseExpression();
 
         /* Check for `then` */
-        if (!getNextToken().equals("then")) return null;
+        token = getNextToken();
+        if (token == null || !token.equals("then")) return null;
 
         Body body = parseBody();
 
         /* Check for `else` */
+        token = getNextToken();
         Body elseBody = null;
-        if (getNextToken().equals("else")) {
+        if (token.equals("else")) {
             elseBody = parseBody();
         } else revertTokenPosition();
 
         /* Check for end */
-        if (!getNextToken().equals("end")) return null;
+        token = getNextToken();
+        if (token == null || !token.equals("end")) return null;
 
         return new If(condition, body, elseBody);
     }
@@ -168,6 +177,8 @@ public class SyntaxParser {
 
     private Return parseReturn() {
         /* Return : return [ Expression ] */
+        RawToken token = getNextRawToken();
+        if(token == null || !token.val.equals("return")) return null;
         Expression expression = parseExpression();
         if (expression == null) {
             return null;
@@ -178,6 +189,8 @@ public class SyntaxParser {
 
     private Print parsePrint() {
         /* Print : print Expression { ',' Expression } */
+        RawToken token = getNextRawToken();
+        if(token == null || !token.val.equals("print")) return null;
         Expression expression = parseExpression();
         if (expression == null) {
             return null;
@@ -227,6 +240,7 @@ public class SyntaxParser {
         } else {
             Expression result = new Expression(relation);
             String operator = getNextToken();
+            if (operator == null) return null;
             while(operator.equals("or") || operator.equals("and") || operator.equals("xor")) {
                 relation = parseRelation();
                 switch (operator) {
@@ -272,8 +286,10 @@ public class SyntaxParser {
         } else {
             Factor result = new Factor(term);
             String operator = getNextToken();
+            if (operator == null) return null;
             while (isFactorSign(operator)) {
                 term = parseTerm();
+                if(term == null) return null;
                 switch (operator) {
                     case "+": result.addTerm(term, ArithmeticOperator.ADD);
                     case "-": result.addTerm(term, ArithmeticOperator.SUB);
@@ -308,6 +324,7 @@ public class SyntaxParser {
 
     private Unary parseUnary() {
         RawToken token = getNextRawToken();
+        if(token == null) return null;
         if (isPrimarySign(token.val)) {
             Primary primary = parsePrimary();
             switch (token.val) {
