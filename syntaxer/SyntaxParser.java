@@ -315,6 +315,9 @@ public class SyntaxParser {
                 case "-": return new SignedPrimary(primary, UnarySign.SUB);
                 case "not": return new SignedPrimary(primary, UnarySign.NOT);
             }
+        } else if (token.val.equals("(")) {
+            Expression expression = parseExpression();
+            return new IsolatedExpression(expression);
         } else {
             revertTokenPosition();
             Primary primary = parsePrimary();
