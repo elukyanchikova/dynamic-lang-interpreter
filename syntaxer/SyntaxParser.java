@@ -39,12 +39,12 @@ public class SyntaxParser {
     }
 
     private String getToken(int position) {
-        if (position >= mTokens.size()) return null;
+        if (position >= mTokens.size()) return "EOF";
         return mTokens.get(position).val;
     }
 
     private RawToken getRawToken(int position) {
-        if (position >= mTokens.size()) return null;
+        if (position >= mTokens.size()) return new RawToken("EOF", 0, 0);
         return mTokens.get(position);
     }
 
@@ -72,24 +72,33 @@ public class SyntaxParser {
         if (result == null) result = parseLoop();
         if (result == null) result = parsePrint();
         if (result == null) result = parseReturn();
+        if (getNextToken() != null) revertTokenPosition();
         return result;
     }
 
     private Declaration parseDeclaration() {
         /* Declaration starts with `var` */
-        if (!getNextToken().equals("var")) return null;
+        String token = getNextToken();
+        if (token == null || !token.equals("var")) {
+            revertTokenPosition();
+            return null;
+        }
 
         /* Then — variable definitions */
         Declaration declaration = new Declaration(parseVariableDefinition());
         while (getNextToken().equals(",")) {
             declaration.addVariableDefinition(parseVariableDefinition());
         }
-
+        revertTokenPosition();
         return declaration;
     }
 
     private Assignment parseAssignment() {
         Reference ref = parseReference();
+        if (ref == null) {
+            revertTokenPosition();
+            return null;
+        }
 
         /* Check for next token */
         if (!getNextToken().equals(":=")) return null;
@@ -102,7 +111,10 @@ public class SyntaxParser {
     private If parseIf() {
         String token = getNextToken();
         /* Conditional starts with `if` */
-        if (token == null || !token.equals("if")) return null;
+        if (token == null || !token.equals("if")) {
+            revertTokenPosition();
+            return null;
+        }
         Expression condition = parseExpression();
 
         /* Check for `then` */
@@ -127,7 +139,7 @@ public class SyntaxParser {
 
     private Loop parseLoop() {
         String token = getNextToken();
-
+        if (token == null) return null;
         if (token.equals("while")) {
             Expression condition = parseExpression();
 
@@ -171,14 +183,17 @@ public class SyntaxParser {
 
             return new ForLoop(body, range, identifier);
         }
-
+        revertTokenPosition();
         return null;
     }
 
     private Return parseReturn() {
         /* Return : return [ Expression ] */
         RawToken token = getNextRawToken();
-        if(token == null || !token.val.equals("return")) return null;
+        if(token == null || !token.val.equals("return")) {
+            revertTokenPosition();
+            return null;
+        }
         Expression expression = parseExpression();
         if (expression == null) {
             return null;
@@ -190,7 +205,10 @@ public class SyntaxParser {
     private Print parsePrint() {
         /* Print : print Expression { ',' Expression } */
         RawToken token = getNextRawToken();
-        if(token == null || !token.val.equals("print")) return null;
+        if(token == null || !token.val.equals("print")) {
+            revertTokenPosition();
+            return null;
+        }
         Expression expression = parseExpression();
         if (expression == null) {
             return null;
@@ -229,7 +247,51 @@ public class SyntaxParser {
     }
 
     private Reference parseReference() {
-        // TODO: parse reference
+        RawToken token = getNextRawToken();
+        if (token == null || token.type != RawToken.TokenType.IDENTIFIER) return null;
+        Reference result = new Reference(new Identifier(token.val));
+        Tail tail;
+        while((tail = parseTail()) != null) {
+            result.addTail(tail);
+        }
+        return result;
+    }
+
+    private Tail parseTail() {
+        RawToken token = getNextRawToken();
+        if (token == null) return null;
+        if (token.val.equals(".")) {
+            token = getNextRawToken();
+            if(token == null) return null;
+            if(token.type == RawToken.TokenType.IDENTIFIER) {
+                return new NamedElementTail(new Identifier(token.val));
+            }
+            // TODO: Change to IntegerLiteral
+            if(token.type == RawToken.TokenType.LITERAL) {
+                return new UnnamedElementTail(new IntegerLiteral(Integer.valueOf(token.val)));
+            }
+            return null;
+        }
+        if (token.val.equals("[")) {
+            Expression expression = parseExpression();
+            if (expression == null) return null;
+            token = getNextRawToken();
+            if (!token.val.equals("]")) return null;
+            return new ArrayElementTail(expression);
+        }
+        if (token.val.equals("(")) {
+            Expression expression = parseExpression();
+            FunctionCallTail result = new FunctionCallTail(expression);
+            token = getNextRawToken();
+            while (token.val.equals(",")) {
+                expression = parseExpression();
+                if (expression == null) return null;
+                result.addArgument(expression);
+            }
+            if (!token.val.equals(")")) return null;
+            return result;
+        }
+        revertTokenPosition();
         return null;
     }
 
@@ -262,8 +324,8 @@ public class SyntaxParser {
             return null;
         } else {
             String operator = getNextToken();
-            Factor secondFactor = parseFactor();
             if (isRelationOperator(operator)) {
+                Factor secondFactor = parseFactor();
                 switch (operator) {
                     case "<":  return new Relation(firstFactor, RelationOperator.LESS, secondFactor);
                     case "<=": return new Relation(firstFactor, RelationOperator.LESS_EQ, secondFactor);
@@ -291,8 +353,8 @@ public class SyntaxParser {
                 term = parseTerm();
                 if(term == null) return null;
                 switch (operator) {
-                    case "+": result.addTerm(term, ArithmeticOperator.ADD);
-                    case "-": result.addTerm(term, ArithmeticOperator.SUB);
+                    case "+": result.addTerm(term, ArithmeticOperator.ADD); break;
+                    case "-": result.addTerm(term, ArithmeticOperator.SUB); break;
                 }
                 operator = getNextToken();
             }
@@ -338,7 +400,9 @@ public class SyntaxParser {
         } else {
             revertTokenPosition();
             Primary primary = parsePrimary();
+            if (primary == null) return null;
             String nextToken = getNextToken();
+            if (nextToken == null) return null;
             if (nextToken.equals("is")) {
                 nextToken = getNextToken();
                 switch (nextToken) {
@@ -363,6 +427,9 @@ public class SyntaxParser {
                         }
                     case "func": return new Is(primary, TypeIndicator.FUNC);
                 }
+            } else {
+                revertTokenPosition();
+                return primary;
             }
         }
         return null;
@@ -462,39 +529,41 @@ public class SyntaxParser {
         if(token.type == RawToken.TokenType.IDENTIFIER) {
             Identifier identifier = new Identifier(token.val);
             token = getNextRawToken();
-            if (!token.val.equals(":=")) {
-                return null;
+            if (token.val.equals(":=")) {
+                Expression expression = parseExpression();
+                if (expression == null) {
+                    return null;
+                }
+                return new TupleElement(identifier, expression);
+            } else {
+                revertTokenPosition();
             }
-            Expression expression = parseExpression();
-            if (expression == null) {
-                return null;
-            }
-            return new TupleElement(identifier, expression);
-        } else {
-            revertTokenPosition();
-            Expression expression = parseExpression();
-            if (expression == null) {
-                return null;
-            }
-            return new TupleElement(expression);
         }
+        revertTokenPosition();
+        Expression expression = parseExpression();
+        if (expression == null) {
+            return null;
+        }
+        return new TupleElement(expression);
     }
 
     private ArrayLiteral parseArrayLiteral() {
         /* ArrayLiteral : '[' [ Expression { ',' Expression } ] ']' */
         RawToken token = getNextRawToken();
+        if (token == null) return null;
         ArrayLiteral result = new ArrayLiteral();
         if (token.val.equals("]")) {
             return result;
         }
-        while(token.val.equals(",")) {
+        revertTokenPosition();
+        do {
             Expression expression = parseExpression();
             if(expression == null) {
                 return null;
             }
             result.addExpression(expression);
             token = getNextRawToken();
-        }
+        } while (token.val.equals(","));
         if (!token.val.equals("]")) {
             return null;
         }

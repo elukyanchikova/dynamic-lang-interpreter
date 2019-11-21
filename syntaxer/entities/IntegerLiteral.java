@@ -3,7 +3,7 @@ package entities;
 public class IntegerLiteral extends Literal {
     Integer value;
 
-    IntegerLiteral(Integer value) {
+    public IntegerLiteral(Integer value) {
         this.value = value;
     }
 

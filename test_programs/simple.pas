@@ -1,2 +1,2 @@
-var abc := [abc, asd, qwe + qwe]
+var abc := [abc, asd, qwe + ewq]
 print abc + basd
