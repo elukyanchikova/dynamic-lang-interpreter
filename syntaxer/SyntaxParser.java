@@ -408,7 +408,7 @@ public class SyntaxParser {
         } else if (token.val.equals("{")) {
             return parseTupleLiteral();
         } else if (token.type == RawToken.TokenType.LITERAL){
-            // Create correspondent to token literal
+            // TODO: Create correspondent to token literal
             // INT, REAL, STRING, EMPTY, BOOLEAN
             return null;
         } else {
