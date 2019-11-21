@@ -3,7 +3,7 @@ package entities;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArrayLiteral {
+public class ArrayLiteral extends Literal {
     List<Expression> expressionList;
 
     ArrayLiteral(Expression expression) {

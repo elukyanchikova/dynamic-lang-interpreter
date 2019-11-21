@@ -357,7 +357,7 @@ public class SyntaxParser {
         if (token.type == RawToken.TokenType.IDENTIFIER) {
             revertTokenPosition();
             return parseReference();
-        } else if (token.type == RawToken.TokenType.LITERAL) {
+        } else if (token.type == RawToken.TokenType.LITERAL || token.val.equals("[") || token.val.equals("{")) {
             revertTokenPosition();
             return parseLiteral();
         } else if (token.type == RawToken.TokenType.KEYWORD && token.val.equals("func")) {
@@ -402,6 +402,25 @@ public class SyntaxParser {
     }
 
     private Literal parseLiteral() {
+        RawToken token = getNextRawToken();
+        if (token.val.equals("[")) {
+            return parseArrayLiteral();
+        } else if (token.val.equals("{")) {
+            return parseTupleLiteral();
+        } else if (token.type == RawToken.TokenType.LITERAL){
+            // Create correspondent to token literal
+            // INT, REAL, STRING, EMPTY, BOOLEAN
+            return null;
+        } else {
+            return null;
+        }
+    }
+
+    private TupleLiteral parseTupleLiteral() {
+        return null;
+    }
+
+    private ArrayLiteral parseArrayLiteral() {
         return null;
     }
 
