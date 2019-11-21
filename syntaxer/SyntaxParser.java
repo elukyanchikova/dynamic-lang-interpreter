@@ -351,6 +351,28 @@ public class SyntaxParser {
         return null;
     }
 
+    private Primary parsePrimary() {
+        RawToken token = getNextRawToken();
+        if (token.type == RawToken.TokenType.IDENTIFIER) {
+            revertTokenPosition();
+            return parseReference();
+        } else if (token.type == RawToken.TokenType.LITERAL) {
+            revertTokenPosition();
+            return parseLiteral();
+        } else if (token.type == RawToken.TokenType.KEYWORD && token.val.equals("func")) {
+            return parseFunctionalLiteral();
+        }
+        return null;
+    }
+
+    private FunctionalLiteral parseFunctionalLiteral() {
+        return null;
+    }
+
+    private Literal parseLiteral() {
+        return null;
+    }
+
     private Body parseBody() {
         /* Body : { Statement } */
         Statement statement = parseStatement();
