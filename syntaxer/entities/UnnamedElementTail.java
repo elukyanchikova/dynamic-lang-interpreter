@@ -1,6 +1,6 @@
 package entities;
 
-public class UnnamedElementTail extends Unary {
+public class UnnamedElementTail extends Tail {
     IntegerLiteral integer;
 
     UnnamedElementTail(IntegerLiteral integer) {

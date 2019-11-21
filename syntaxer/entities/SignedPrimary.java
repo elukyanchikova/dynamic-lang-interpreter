@@ -9,7 +9,7 @@ public class SignedPrimary extends Unary {
         this.sign = UnarySign.NONE;
     }
 
-    SignedPrimary(Primary primary, UnarySign sign) {
+    public SignedPrimary(Primary primary, UnarySign sign) {
         this.primary = primary;
         this.sign = sign;
     }

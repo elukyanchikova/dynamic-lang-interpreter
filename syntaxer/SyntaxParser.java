@@ -307,7 +307,44 @@ public class SyntaxParser {
     }
 
     private Unary parseUnary() {
-        // TODO: Unary parsing
+        RawToken token = getNextRawToken();
+        if (isPrimarySign(token.val)) {
+            Primary primary = parsePrimary();
+            switch (token.val) {
+                case "+": return new SignedPrimary(primary, UnarySign.ADD);
+                case "-": return new SignedPrimary(primary, UnarySign.SUB);
+                case "not": return new SignedPrimary(primary, UnarySign.NOT);
+            }
+        } else {
+            revertTokenPosition();
+            Primary primary = parsePrimary();
+            String nextToken = getNextToken();
+            if (nextToken.equals("is")) {
+                nextToken = getNextToken();
+                switch (nextToken) {
+                    case "int": return new Is(primary, TypeIndicator.INT);
+                    case "real": return new Is(primary, TypeIndicator.REAL);
+                    case "bool": return new Is(primary, TypeIndicator.BOOL);
+                    case "string": return new Is(primary, TypeIndicator.STRING);
+                    case "empty": return new Is(primary, TypeIndicator.EMPTY);
+                    case "[":
+                        nextToken = getNextToken();
+                        if (nextToken.equals("]")) {
+                            return new Is(primary, TypeIndicator.VECTOR);
+                        } else {
+                            return null;
+                        }
+                    case "{":
+                        nextToken = getNextToken();
+                        if (nextToken.equals("}")) {
+                            return new Is(primary, TypeIndicator.TUPLE);
+                        } else {
+                            return null;
+                        }
+                    case "func": return new Is(primary, TypeIndicator.FUNC);
+                }
+            }
+        }
         return null;
     }
 
@@ -342,6 +379,10 @@ public class SyntaxParser {
 
     private boolean isFactorSign(String operator) {
         return operator.equals("+") || operator.equals("-");
+    }
+
+    private boolean isPrimarySign(String operator) {
+        return operator.equals("+") || operator.equals("-") || operator.equals("not");
     }
 
 }
