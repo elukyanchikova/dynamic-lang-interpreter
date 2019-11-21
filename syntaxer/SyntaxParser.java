@@ -402,6 +402,7 @@ public class SyntaxParser {
     }
 
     private Literal parseLiteral() {
+        /* Literal: INTEGER | REAL | STRING | Boolean | Tuple | Array | empty */
         RawToken token = getNextRawToken();
         if (token.val.equals("[")) {
             return parseArrayLiteral();
@@ -417,11 +418,70 @@ public class SyntaxParser {
     }
 
     private TupleLiteral parseTupleLiteral() {
-        return null;
+        /* Tuple : '{' TupleElement { ',' TupleElement } '}' */
+        TupleElement tupleElement = parseTupleElement();
+        if(tupleElement == null) {
+            return null;
+        }
+        TupleLiteral result = new TupleLiteral(tupleElement);
+        RawToken token = getNextRawToken();
+        while(token.val.equals(",")) {
+            tupleElement = parseTupleElement();
+            if(tupleElement == null) {
+                return null;
+            }
+            result.addElement(tupleElement);
+            token = getNextRawToken();
+        }
+        if(!token.val.equals("}")) {
+            return null;
+        }
+        return result;
+    }
+
+    private TupleElement parseTupleElement() {
+        /* TupleElement : [ Identifier ‘:=’ ] Expression */
+        RawToken token = getNextRawToken();
+        if(token.type == RawToken.TokenType.IDENTIFIER) {
+            Identifier identifier = new Identifier(token.val);
+            token = getNextRawToken();
+            if (!token.val.equals(":=")) {
+                return null;
+            }
+            Expression expression = parseExpression();
+            if (expression == null) {
+                return null;
+            }
+            return new TupleElement(identifier, expression);
+        } else {
+            revertTokenPosition();
+            Expression expression = parseExpression();
+            if (expression == null) {
+                return null;
+            }
+            return new TupleElement(expression);
+        }
     }
 
     private ArrayLiteral parseArrayLiteral() {
-        return null;
+        /* ArrayLiteral : '[' [ Expression { ',' Expression } ] ']' */
+        RawToken token = getNextRawToken();
+        ArrayLiteral result = new ArrayLiteral();
+        if (token.val.equals("]")) {
+            return result;
+        }
+        while(token.val.equals(",")) {
+            Expression expression = parseExpression();
+            if(expression == null) {
+                return null;
+            }
+            result.addExpression(expression);
+            token = getNextRawToken();
+        }
+        if (!token.val.equals("]")) {
+            return null;
+        }
+        return result;
     }
 
     private Body parseBody() {

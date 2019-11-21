@@ -11,6 +11,10 @@ public class ArrayLiteral extends Literal {
         addExpression(expression);
     }
 
+    public ArrayLiteral() {
+        expressionList = new ArrayList<>();
+    }
+
     public void addExpression(Expression expression) {
         expressionList.add(expression);
     }

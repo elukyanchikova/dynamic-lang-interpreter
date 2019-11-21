@@ -6,7 +6,7 @@ import java.util.List;
 public class TupleLiteral extends Literal {
     List<TupleElement> tupleElementList;
 
-    TupleLiteral(TupleElement tupleElement) {
+    public TupleLiteral(TupleElement tupleElement) {
         tupleElementList = new ArrayList<>();
         addElement(tupleElement);
     }
