@@ -164,6 +164,7 @@ public class SyntaxParser {
             /* Check whether next token is not`loop`: we have range */
             Range range = null;
             if (!getNextToken().equals("loop")) {
+                revertTokenPosition();
                 Expression rangeStart = parseExpression();
 
                 /* Next token must be `..` */
