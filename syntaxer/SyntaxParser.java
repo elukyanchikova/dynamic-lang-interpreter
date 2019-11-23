@@ -230,7 +230,7 @@ public class SyntaxParser {
     private VariableDefinition parseVariableDefinition() {
         /* VariableDefinition : IDENT [ ':=' Expression ] */
         RawToken token = getNextRawToken();
-        if (token.isIdentifier()) {
+        if (token.type == RawToken.TokenType.IDENTIFIER) {
             Identifier identifier = new Identifier(token.val);
             VariableDefinition result = new VariableDefinition(identifier);
             if (getNextToken().equals(":=")) {
@@ -266,9 +266,15 @@ public class SyntaxParser {
             if(token.type == RawToken.TokenType.IDENTIFIER) {
                 return new NamedElementTail(new Identifier(token.val));
             }
-            // TODO: Change to IntegerLiteral
             if(token.type == RawToken.TokenType.LITERAL) {
-                return new UnnamedElementTail(new IntegerLiteral(Integer.valueOf(token.val)));
+                revertTokenPosition();
+                Literal index = parsePrimitiveLiteral();
+                if (index instanceof IntegerLiteral) {
+                    return new UnnamedElementTail(new IntegerLiteral(Integer.valueOf(token.val)));
+                } else {
+                    return null;
+                }
+
             }
             return null;
         }
@@ -493,9 +499,8 @@ public class SyntaxParser {
         } else if (token.val.equals("{")) {
             return parseTupleLiteral();
         } else if (token.type == RawToken.TokenType.LITERAL){
-            // TODO: Create correspondent to token literal
-            // INT, REAL, STRING, EMPTY, BOOLEAN
-            return null;
+            revertTokenPosition();
+            return parsePrimitiveLiteral();
         } else {
             return null;
         }
@@ -583,7 +588,6 @@ public class SyntaxParser {
                     result.addStatement(statement);
                 } else {
                     return result;
-                    // #TODO: handle syntax error
                 }
             }
         }
@@ -605,6 +609,25 @@ public class SyntaxParser {
 
     private boolean isPrimarySign(String operator) {
         return operator.equals("+") || operator.equals("-") || operator.equals("not");
+    }
+
+    // This method supposes that Lexical Analyzer gives
+    // only correct literals correspondent to D language specification
+    private Literal parsePrimitiveLiteral() {
+        String value = getNextToken();
+        if (value.startsWith("\"") || value.startsWith("'")) {
+            return new StringLiteral(value);
+        }
+        if (value.contains(".")) {
+            return new RealLiteral(Double.valueOf(value));
+        }
+        if (value.equals("true") || value.equals("false")) {
+            return new BooleanLiteral(Boolean.valueOf(value));
+        }
+        if (value.equals("empty")) {
+            return new EmptyLiteral();
+        }
+        return new IntegerLiteral(Integer.valueOf(value));
     }
 
 }
