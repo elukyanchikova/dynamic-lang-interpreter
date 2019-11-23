@@ -223,16 +223,12 @@ public class Tokenizer {
                         tokenBuf.append(read);
                     } else if (prevState == states.WORD) {
                         state = states.REFERENCE;
-                        tokenBuf.append(read);
                         flushTokenBuf(tokenBuf);
-                    } else if(prevState == states.PERIOD){
+                        tokenBuf.append(read);
+                    } else if(prevState == states.REFERENCE) {
                         state = states.RANGE;
                         tokenBuf.append(read);
                         flushTokenBuf(tokenBuf);
-                    } else {
-                        state = states.PERIOD;
-                        flushTokenBuf(tokenBuf);
-                        tokenBuf.append(read);
                     }
 
                     break;
@@ -261,7 +257,7 @@ public class Tokenizer {
 
     private enum states {
         WORD, STRING1, STRING2, NUMBER, REAL_NUMBER,
-        COLON, ASSIGN, FUN_ASSIGN, PERIOD, RANGE, REFERENCE,
+        COLON, ASSIGN, FUN_ASSIGN, RANGE, REFERENCE,
         EQ, NE, LT, LE, GT, GE, MUL, DIV, SUB,
         BR_OPEN, BR_CLOSE,
         COMM_OPEN, COMM_CLOSE, COMM_LINE,
