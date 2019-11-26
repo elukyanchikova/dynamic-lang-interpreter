@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -34,7 +35,8 @@ public class Main {
         }
 
         // Here we get all the tokens
-        la.lexerGetTokens(inputFile, "Output.txt");
+        ArrayList<RawToken> tokens = la.lexerGetTokens(inputFile, "Output.txt");
+
 
     }
 

@@ -115,7 +115,7 @@ public class LexicalAnalysis {
             given.setTokenType(RawToken.TokenType.IDENTIFIER);
             tokens.add(given);
 
-        } else {
+        } else  {
             given.setTokenType(RawToken.TokenType.LITERAL);
             tokens.add(given);
         }
@@ -125,7 +125,6 @@ public class LexicalAnalysis {
         //Open file
         InputStream fromFile = new FileInputStream(inputPath);
         Tokenizer tokenizer = new Tokenizer(fromFile);
-
         tokenizer.tokenize();
         fromFile.close();
 
