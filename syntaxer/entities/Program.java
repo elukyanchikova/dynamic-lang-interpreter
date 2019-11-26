@@ -4,14 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Program {
+    private List<Statement> statements;
 
-    private List<Statement> statementList;
-
-    Program() {
-        this.statementList = new ArrayList<>();
+    public Program() {
+        this.statements = new ArrayList<>();
     }
 
     public void addStatement(Statement statement) {
-        this.statementList.add(statement);
+        this.statements.add(statement);
+    }
+
+    public List<Statement> getStatements() {
+        return this.statements;
     }
 }

@@ -1,9 +1,9 @@
 package entities;
 
-public class BodyFunctionBody {
+public class BodyFunctionBody extends FunctionBody {
     Body body;
 
-    BodyFunctionBody(Body body) {
+    public BodyFunctionBody(Body body) {
         this.body = body;
     }
 }

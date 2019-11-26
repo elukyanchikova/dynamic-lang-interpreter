@@ -5,13 +5,13 @@ public class Relation {
     RelationOperator operator;
     Factor secondFactor;
 
-    Relation(Factor firstFactor, RelationOperator operator, Factor secondFactor) {
+    public Relation(Factor firstFactor, RelationOperator operator, Factor secondFactor) {
         this.firstFactor = firstFactor;
         this.operator = operator;
         this.secondFactor = secondFactor;
     }
 
-    Relation(Factor firstFactor) {
+    public Relation(Factor firstFactor) {
         this.firstFactor = firstFactor;
         operator = null;
         secondFactor = null;

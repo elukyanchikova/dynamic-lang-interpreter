@@ -7,7 +7,7 @@ public class Term {
     List<Unary> unaryList;
     List<MultiplicationOperator> multiplicationOperatorList;
 
-    Term(Unary unary) {
+    public Term(Unary unary) {
         unaryList = new ArrayList<>();
         multiplicationOperatorList = new ArrayList<>();
         addUnary(unary, MultiplicationOperator.NONE);

@@ -7,7 +7,7 @@ public class Reference extends Primary {
     Identifier identifier;
     List<Tail> tailList;
 
-    Reference(Identifier identifier) {
+    public Reference(Identifier identifier) {
         tailList = new ArrayList<>();
         this.identifier = identifier;
     }

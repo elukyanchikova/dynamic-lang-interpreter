@@ -6,13 +6,9 @@ import java.util.List;
 public class FunctionCallTail extends Tail {
     List<Expression> arguments;
 
-    FunctionCallTail(Expression argument) {
-        this();
-        addArgument(argument);
-    }
-
-    FunctionCallTail() {
+    public FunctionCallTail(Expression argument) {
         this.arguments = new ArrayList<>();
+        addArgument(argument);
     }
 
     public void addArgument(Expression argument) {

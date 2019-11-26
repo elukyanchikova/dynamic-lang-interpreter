@@ -1,11 +1,25 @@
 package entities;
 
 public class WhileLoop extends Loop {
-    Expression condition;
-    Body body;
+    private Expression mCondition;
+    private Body mBody;
 
-    WhileLoop(Expression condition, Body body) {
-        this.condition = condition;
-        this.body = body;
+    public WhileLoop(Expression condition, Body body) {
+        this.mCondition = condition;
+        this.mBody = body;
+    }
+
+    /**
+     * @return the body
+     */
+    public Body getBody() {
+        return mBody;
+    }
+
+    /**
+     * @return the condition
+     */
+    public Expression getCondition() {
+        return mCondition;
     }
 }
