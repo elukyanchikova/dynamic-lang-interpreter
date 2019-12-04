@@ -1,5 +1,9 @@
-import entities.Program;
-import entities.Statement;
+package tests;
+
+import semanter.SemanticAnalyzer;
+import syntaxer.SyntaxParser;
+import syntaxer.entities.Program;
+import syntaxer.entities.Statement;
 
 import java.io.IOException;
 

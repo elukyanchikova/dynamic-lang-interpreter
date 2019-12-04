@@ -10,7 +10,7 @@ public class SemanticAnalyzer {
 
     private Program ast;
 
-    public SemanticAnalyzer(Program ast) throws IOException {
+    public SemanticAnalyzer(Program ast) {
         this.ast = ast;
         List<Statement> statements = ast.getStatements();
         simplify(statements);
@@ -20,7 +20,7 @@ public class SemanticAnalyzer {
         return ast;
     }
 
-    public void simplify(List<Statement> statements) {
+    private void simplify(List<Statement> statements) {
         for(Statement s: statements) {
             if(s instanceof Declaration) {
                 List<VariableDefinition> varDefs = ((Declaration) s).getVariableDefinitions();
@@ -30,7 +30,7 @@ public class SemanticAnalyzer {
                     vd.setExpression(expression);
                 }
             } else if (s instanceof Assignment) {
-                ((Assignment) s).setExpression(((Assignment) s).getExpression());
+                ((Assignment) s).setExpression(simplifyExpression(((Assignment) s).getExpression()));
             } else if (s instanceof If) {
                 ((If) s).setCondition(simplifyExpression(((If) s).getCondition()));
                 Body body = ((If) s).getThenBody();
@@ -58,7 +58,7 @@ public class SemanticAnalyzer {
                 }
                 ((Print) s).setExpressions(newExpression);
             } else if (s instanceof Return) {
-                ((Return) s).setExpression(((Return) s).getExpression());
+                ((Return) s).setExpression(simplifyExpression(((Return) s).getExpression()));
             }
 
         }
@@ -84,7 +84,8 @@ public class SemanticAnalyzer {
                     relations.set(i, simplifyRelation(relations.get(i)));
                 }
             } else {
-                return simplifyRelation(relations.get(0));
+                Relation singleRelation = (Relation) relations.get(0);
+                return simplifyRelation(singleRelation);
             }
         }
         return expression;
@@ -113,7 +114,8 @@ public class SemanticAnalyzer {
                     terms.set(i, simplifyTerm(terms.get(i)));
                 }
             } else {
-                return simplifyTerm(terms.get(0));
+                Term singleTerm = (Term) terms.get(0);
+                return simplifyTerm(singleTerm);
             }
             return factor;
         } else {
@@ -129,7 +131,8 @@ public class SemanticAnalyzer {
                     unaryList.set(i, simplifyUnary(unaryList.get(i)));
                 }
             } else {
-                return simplifyUnary(unaryList.get(0));
+                Unary singleUnary = (Unary) unaryList.get(0);
+                return simplifyUnary(singleUnary);
             }
             return term;
         } else {
@@ -140,7 +143,7 @@ public class SemanticAnalyzer {
     private Expression simplifyUnary(Expression unary) {
         if (unary instanceof Unary) {
             if (unary instanceof IsolatedExpression) {
-                ((IsolatedExpression) unary).setExpression(((IsolatedExpression) unary).getExpression());
+                ((IsolatedExpression) unary).setExpression(simplifyExpression(((IsolatedExpression) unary).getExpression()));
                 return unary;
             } else if (unary instanceof Is) {
                 ((Is) unary).setPrimary(simplifyPrimary(((Is) unary).getPrimary()));
