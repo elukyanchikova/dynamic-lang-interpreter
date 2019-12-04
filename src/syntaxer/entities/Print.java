@@ -4,21 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Print extends Statement {
-    private List<Expression> mExpressions;
+    private List<Expression> expressions;
 
     public Print(Expression expression) {
-        this.mExpressions = new ArrayList<>();
+        this.expressions = new ArrayList<>();
         addExpression(expression);
     }
 
     public void addExpression(Expression expression) {
-        this.mExpressions.add(expression);
+        this.expressions.add(expression);
     }
 
     /**
      * @return the expressions
      */
     public List<Expression> getExpressions() {
-        return mExpressions;
+        return expressions;
+    }
+
+    public void setExpressions(List<Expression> expressions) {
+        this.expressions = expressions;
     }
 }

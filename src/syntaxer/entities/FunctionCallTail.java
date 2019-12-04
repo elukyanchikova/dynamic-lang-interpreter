@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FunctionCallTail extends Tail {
-    List<Expression> arguments;
+    private List<Expression> arguments;
 
     public FunctionCallTail(Expression argument) {
         this.arguments = new ArrayList<>();
@@ -13,5 +13,9 @@ public class FunctionCallTail extends Tail {
 
     public void addArgument(Expression argument) {
         arguments.add(argument);
+    }
+
+    public List<Expression> getArguments() {
+        return arguments;
     }
 }

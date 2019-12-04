@@ -6,7 +6,7 @@ public class VariableDefinition extends Statement {
 
     public VariableDefinition(Identifier identifier) {
         this.mIdentifier = identifier;
-        this.mExpression = new Expression(new Relation(new Factor(new Term(new EmptyLiteral()))));
+        this.mExpression = new ExpressionComplex(new Relation(new Factor(new Term(new EmptyLiteral()))));
     }
 
     VariableDefinition(Identifier identifier, Expression expression) {

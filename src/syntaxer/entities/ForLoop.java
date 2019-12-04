@@ -1,14 +1,14 @@
 package syntaxer.entities;
 
 public class ForLoop extends Loop {
-    private Identifier mCounter;
-    private Range mRange;
-    private Body mBody;
+    private Identifier counter;
+    private Range range;
+    private Body body;
 
     public ForLoop(Body body, Range range, Identifier counter) {
-        this.mCounter = counter;
-        this.mRange = range;
-        this.mBody = body;
+        this.counter = counter;
+        this.range = range;
+        this.body = body;
     }
 
     public ForLoop(Body body, Range range) {
@@ -23,20 +23,20 @@ public class ForLoop extends Loop {
      * @return the counter
      */
     public Identifier getCounter() {
-        return mCounter;
+        return counter;
     }
 
     /**
      * @return the range
      */
     public Range getRange() {
-        return mRange;
+        return range;
     }
 
     /**
      * @return the body
      */
     public Body getBody() {
-        return mBody;
+        return body;
     }
 }

@@ -1,4 +1,4 @@
 package syntaxer.entities;
 
-public class Unary {
+public class Unary extends Expression {
 }
