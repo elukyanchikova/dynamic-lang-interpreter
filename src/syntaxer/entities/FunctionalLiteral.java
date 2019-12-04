@@ -26,4 +26,8 @@ public class FunctionalLiteral extends Literal {
     public void setFunctionBody(FunctionBody body) {
         this.functionBody = body;
     }
+
+    public FunctionBody getFunctionBody() {
+        return functionBody;
+    }
 }

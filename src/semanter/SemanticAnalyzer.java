@@ -1,4 +1,6 @@
-import entities.*;
+package semanter;
+
+import syntaxer.entities.*;
 
 import java.io.IOException;
 import java.util.ArrayList;

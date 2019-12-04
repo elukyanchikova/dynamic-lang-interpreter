@@ -1,7 +1,7 @@
 package syntaxer.entities;
 
 public class Is extends Unary {
-    private Expression  primary;
+    private Expression primary;
     private TypeIndicator typeIndicator;
 
     public Is(Expression primary, TypeIndicator typeIndicator) {
