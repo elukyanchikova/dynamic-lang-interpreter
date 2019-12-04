@@ -3,7 +3,7 @@ package entities;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FunctionalLiteral extends Primary {
+public class FunctionalLiteral extends Literal {
     List<Identifier> arguments;
     FunctionBody functionBody;
 
