@@ -1,6 +1,6 @@
 package entities;
 
-public class Identifier {
+public class Identifier extends Primary {
     String value;
 
     public Identifier(String value) {

@@ -307,7 +307,7 @@ public class SyntaxParser {
         if(relation == null) {
             return null;
         } else {
-            Expression result = new Expression(relation);
+            ExpressionComplex result = new ExpressionComplex(relation);
             String operator = getNextToken();
             if (operator == null) return null;
             while(operator.equals("or") || operator.equals("and") || operator.equals("xor")) {

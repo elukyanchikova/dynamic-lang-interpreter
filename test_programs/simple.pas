@@ -2,7 +2,7 @@ var abc := [abc, asd, qwe + ewq]
 var io := 4
 var iss := 5 + io
 print abc + basd
-for i1 loop
+for i1 in 1 .. 25 loop
     var a := 6
     a := a + b
 end

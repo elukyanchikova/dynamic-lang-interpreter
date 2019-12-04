@@ -1,25 +1,29 @@
 package entities;
 
 public class Assignment extends Statement {
-    private Reference mReference;
-    private Expression mExpression;
+    private Reference reference;
+    private Expression expression;
 
     public Assignment(Reference reference, Expression expression) {
-        this.mReference = reference;
-        this.mExpression = expression;
+        this.reference = reference;
+        this.expression = expression;
     }
 
     /**
      * @return the expression
      */
     public Expression getExpression() {
-        return mExpression;
+        return expression;
     }
 
     /**
      * @return the reference
      */
     public Reference getReference() {
-        return mReference;
+        return reference;
+    }
+
+    public void setExpression(Expression expression) {
+        this.expression = expression;
     }
 }

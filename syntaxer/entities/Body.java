@@ -4,18 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Body {
-    List<Statement> statementList;
+    private List<Statement> statements;
 
     Body() {
-        statementList = new ArrayList<>();
+        statements = new ArrayList<>();
     }
 
     public Body(Statement statement) {
-        statementList = new ArrayList<>();
+        statements = new ArrayList<>();
         addStatement(statement);
     }
 
     public void addStatement(Statement statement) {
-        statementList.add(statement);
+        statements.add(statement);
+    }
+
+    public List<Statement> getStatements() {
+        return statements;
     }
 }
