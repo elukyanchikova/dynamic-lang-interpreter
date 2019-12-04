@@ -1,5 +1,0 @@
-class Interpreter {
-  public Interpreter() {
-
-  }
-}
