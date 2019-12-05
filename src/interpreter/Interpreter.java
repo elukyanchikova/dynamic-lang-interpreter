@@ -17,6 +17,12 @@ public class Interpreter {
     List<Statement> statements = program.getStatements();
     for (Statement statement : statements) {
       if (statement instanceof Declaration) executeVariableDeclaration(statement);
+      else if (statement instanceof Assignment) executeAssignment(statement);
+      else if (statement instanceof Loop) executeVariableDeclaration(statement);
+      else if (statement instanceof If) executeVariableDeclaration(statement);
+      else if (statement instanceof Print) executeVariableDeclaration(statement);
+      else if (statement instanceof Return) executeVariableDeclaration(statement);
+      else System.out.println("Sheeesh, null Statement");
     }
   }
 
@@ -42,9 +48,27 @@ public class Interpreter {
     System.out.printf("Added identifier %s, value %s\n", identifier.getName(), "null");
   }
 
+  private void executeAssignment(Statement statement) {
+    Assignment assignment = (Assignment) statement;
+  }
+
+  private void executeLoop(Statement statement) {
+    Loop loop = (Loop) statement;
+  }
+
+  private void executeIf(Statement statement) {
+    If ifStatement = (If) statement;
+  }
+
+  private void executePrint(Statement statement) {
+    Print printStatement = (Print) statement;
+  }
+
+  private void executeReturn(Statement statement) {
+    Return returnStatement = (Return) statement;
+  }
+
   private ScopeTable.ValueTypeWrapper evaluateExpression(Expression expr) {
     return null;
   }
-
-
 }
