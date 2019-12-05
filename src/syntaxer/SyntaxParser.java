@@ -30,6 +30,7 @@ public class SyntaxParser {
         if (mTokenPosition >= mTokens.size()) {
             System.out.println("Syntax analyzing finished");
         } else {
+            // TODO: Syntax error info showing error line with position
             System.out.println("Syntax error");
         }
         return program;
@@ -483,14 +484,14 @@ public class SyntaxParser {
         if (token.val.equals("is")) {
             Body body = parseBody();
             if (body == null) return null;
-            result.setFunctionBody(new BodyFunctionBody(body));
+            result.setFunctionBody(body);
             token = getNextRawToken();
             if (!token.val.equals("end")) return null;
             return result;
         } else if (token.val.equals(">=")){
             Expression expression = parseExpression();
             if (expression == null) return null;
-            result.setFunctionBody(new LambdaFunction(expression));
+            result.setFunctionBody(new Body(new Return(expression)));
             return result;
         } else {
             return null;
