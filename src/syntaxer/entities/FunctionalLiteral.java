@@ -5,9 +5,9 @@ import java.util.List;
 
 public class FunctionalLiteral extends Literal {
     List<Identifier> arguments;
-    FunctionBody functionBody;
+    Body functionBody;
 
-    public FunctionalLiteral(Identifier argument, FunctionBody functionBody) {
+    public FunctionalLiteral(Identifier argument, Body functionBody) {
         arguments = new ArrayList<>();
         this.functionBody = functionBody;
         addArgument(argument);
@@ -23,11 +23,11 @@ public class FunctionalLiteral extends Literal {
         arguments.add(argument);
     }
 
-    public void setFunctionBody(FunctionBody body) {
+    public void setFunctionBody(Body body) {
         this.functionBody = body;
     }
 
-    public FunctionBody getFunctionBody() {
+    public Body getFunctionBody() {
         return functionBody;
     }
 }
