@@ -15,6 +15,10 @@ public class Interpreter {
         this.parentScope = parentScope;
     }
 
+    public ScopeTable getScope() {
+        return scope;
+    }
+
     public ScopeTable.ValueTypeWrapper execute() {
         List<Statement> statements = program.getStatements();
         for (Statement statement : statements) {
@@ -91,15 +95,15 @@ public class Interpreter {
     private ScopeTable.ValueTypeWrapper exectuteFunction(FunctionalLiteral functionalLiteral){
         List<Identifier> identifiers = functionalLiteral.getArguments();
 
-        for (Identifier identifier : identifiers) {
-            this.scope.put(identifier.getName(), this.evaluateExpression(identifier));
-        }
-
         List<Statement> statements = functionalLiteral.getFunctionBody().getStatements();
         Program program = new Program();
         program.setStatements(statements);
 
         Interpreter interpreter = new Interpreter(program, this.scope);
+
+        for (Identifier identifier : identifiers) {
+            interpreter.getScope().put(identifier.getName(), this.evaluateExpression(identifier));
+        }
         return interpreter.execute();
 
 //
