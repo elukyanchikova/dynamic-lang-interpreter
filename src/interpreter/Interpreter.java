@@ -33,15 +33,25 @@ public class Interpreter {
   private void executeVariableDefinition(VariableDefinition variableDefinition) {
     Identifier identifier = variableDefinition.getIdentifier();
 
-    /* Check for existing identifier */
+    /* Check for existing identifier in the scope */
     if (this.scope.get(identifier.getName()) != null) {
       throw new RuntimeException("Variable already defined!");
+    }
+
+    if (variableDefinition.getExpression() instanceof FunctionalLiteral){
+      ScopeTable functionScope = ((FunctionalLiteral) variableDefinition.getExpression()).getScope();
+//      List<Statement> statements = (FunctionalLiteral)((FunctionalLiteral) variableDefinition.getExpression()).getF();
     }
 
     this.scope.put(identifier.getName(), evaluateExpression(variableDefinition.getExpression()));
     System.out.printf("Added identifier %s, value %s\n", identifier.getName(), "null");
   }
 
+
+  private void exectuteFunction(Statement statement){
+//    FunctionalLiteral functionalLiteral = (FunctionalLiteral)statement;
+
+  }
   private ScopeTable.ValueTypeWrapper evaluateExpression(Expression expr) {
     return null;
   }
