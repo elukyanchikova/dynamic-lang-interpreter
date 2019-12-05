@@ -32,7 +32,7 @@ public class Main {
         String inputFile = in.nextLine();
         LexicalAnalysis la = new LexicalAnalysis();
         if (inputFile.isEmpty()) {
-            inputFile = "SamplePascal.pas";
+            inputFile = "test_programs/test.pas";
         }
 
         // Here we get all the tokens
