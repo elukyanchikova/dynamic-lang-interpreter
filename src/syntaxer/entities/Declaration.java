@@ -15,6 +15,10 @@ public class Declaration extends Statement {
         this.mVariableDefinitions.add(variableDefinition);
     }
 
+    public List<VariableDefinition> getVariableDefinition(){
+        return this.mVariableDefinitions;
+    }
+
     /**
      * @return the variable definitions
      */
