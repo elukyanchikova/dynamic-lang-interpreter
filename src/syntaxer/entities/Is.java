@@ -16,4 +16,8 @@ public class Is extends Unary {
     public Expression getPrimary() {
         return primary;
     }
+
+    public TypeIndicator getTypeIndicator() {
+        return typeIndicator;
+    }
 }

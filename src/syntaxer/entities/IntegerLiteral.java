@@ -1,13 +1,21 @@
 package syntaxer.entities;
 
 public class IntegerLiteral extends Literal {
-    Integer value;
+    private Integer value;
 
     public IntegerLiteral(Integer value) {
         this.value = value;
     }
 
     IntegerLiteral(int value) {
+        this.value = value;
+    }
+
+    public Integer getValue() {
+        return value;
+    }
+
+    public void setValue(Integer value) {
         this.value = value;
     }
 

@@ -32,4 +32,8 @@ public class Relation extends Expression {
     public void setSecondFactor(Expression secondFactor) {
         this.secondFactor = secondFactor;
     }
+
+    public RelationOperator getOperator() {
+        return operator;
+    }
 }
