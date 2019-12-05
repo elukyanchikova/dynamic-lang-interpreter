@@ -30,4 +30,9 @@ public class FunctionalLiteral extends Literal {
     public Body getFunctionBody() {
         return functionBody;
     }
+
+    @Override
+    public String toString() {
+        return "<Function>";
+    }
 }

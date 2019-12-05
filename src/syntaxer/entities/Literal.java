@@ -8,4 +8,9 @@ public class Literal extends Primary {
         REAL,
         BOOLEAN
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }
