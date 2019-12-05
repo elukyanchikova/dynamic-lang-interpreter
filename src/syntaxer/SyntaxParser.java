@@ -30,7 +30,10 @@ public class SyntaxParser {
         if (mTokenPosition >= mTokens.size()) {
             System.out.println("Syntax analyzing finished");
         } else {
+            // TODO: Syntax error info showing error line with position
             System.out.println("Syntax error");
+            RawToken token = getRawToken(mTokenPosition);
+            System.out.printf("line: %d pos: %d\n value: %s\n", token.line, token.position, token.val);
         }
         return program;
     }
@@ -156,13 +159,21 @@ public class SyntaxParser {
 
             return new WhileLoop(condition, body);
         } else if (token.equals("for")) {
-            token = getNextToken();
+            RawToken rawToken = getNextRawToken();
 
             /* Check whether the next token is `in`: we have identifier */
             Identifier identifier = null;
             if (getNextToken().equals("in")) {
-                identifier = new Identifier(token);
-            } else revertTokenPosition();
+                identifier = new Identifier(rawToken.val);
+            } else {
+                if (rawToken.type == RawToken.TokenType.IDENTIFIER) {
+                    return null;
+                }
+                revertTokenPosition();
+            }
+
+
+
 
             /* Check whether next token is not`loop`: we have range */
             Range range = null;
@@ -264,7 +275,7 @@ public class SyntaxParser {
     private Tail parseTail() {
         RawToken token = getNextRawToken();
         if (token == null) return null;
-        if (token.val.equals("")) {
+        if (token.val.equals(".")) {
             token = getNextRawToken();
             if(token == null) return null;
             if(token.type == RawToken.TokenType.IDENTIFIER) {
@@ -297,6 +308,7 @@ public class SyntaxParser {
                 expression = parseExpression();
                 if (expression == null) return null;
                 result.addArgument(expression);
+                token = getNextRawToken();
             }
             if (!token.val.equals(")")) return null;
             return result;
@@ -384,8 +396,8 @@ public class SyntaxParser {
             while (isTermSign(operator)) {
                 unary = parseUnary();
                 switch (operator) {
-                    case "*": result.addUnary(unary, MultiplicationOperator.MUL);
-                    case "/": result.addUnary(unary, MultiplicationOperator.DIV);
+                    case "*": result.addUnary(unary, MultiplicationOperator.MUL); break;
+                    case "/": result.addUnary(unary, MultiplicationOperator.DIV); break;
                 }
                 operator = getNextToken();
             }
@@ -456,6 +468,10 @@ public class SyntaxParser {
             return parseLiteral();
         } else if (token.type == RawToken.TokenType.KEYWORD && token.val.equals("func")) {
             return parseFunctionalLiteral();
+        } else if (token.type == RawToken.TokenType.KEYWORD && token.val.equals("empty")) {
+            return new EmptyLiteral();
+        } else if (token.type == RawToken.TokenType.KEYWORD && (token.val.equals("true") || token.val.equals("false"))) {
+            return new BooleanLiteral(Boolean.valueOf(token.val));
         }
         return null;
     }
@@ -472,6 +488,7 @@ public class SyntaxParser {
             token = getNextRawToken();
             if (token.type != RawToken.TokenType.IDENTIFIER) return null;
             result.addArgument(new Identifier(token.val));
+            token = getNextRawToken();
         }
         if (!token.val.equals(")")) return null;
         token = getNextRawToken();
@@ -481,14 +498,14 @@ public class SyntaxParser {
         if (token.val.equals("is")) {
             Body body = parseBody();
             if (body == null) return null;
-            result.setFunctionBody(new BodyFunctionBody(body));
+            result.setFunctionBody(body);
             token = getNextRawToken();
             if (!token.val.equals("end")) return null;
             return result;
-        } else if (token.val.equals(">=")){
+        } else if (token.val.equals("=>")){
             Expression expression = parseExpression();
             if (expression == null) return null;
-            result.setFunctionBody(new LambdaFunction(expression));
+            result.setFunctionBody(new Body(new Return(expression)));
             return result;
         } else {
             return null;
@@ -620,16 +637,10 @@ public class SyntaxParser {
     private Literal parsePrimitiveLiteral() {
         String value = getNextToken();
         if (value.startsWith("\"") || value.startsWith("'")) {
-            return new StringLiteral(value);
+            return new StringLiteral(value.substring(1, value.length() - 1));
         }
-        if (value.contains("")) {
+        if (value.contains(".")) {
             return new RealLiteral(Double.valueOf(value));
-        }
-        if (value.equals("true") || value.equals("false")) {
-            return new BooleanLiteral(Boolean.valueOf(value));
-        }
-        if (value.equals("empty")) {
-            return new EmptyLiteral();
         }
         return new IntegerLiteral(Integer.valueOf(value));
     }

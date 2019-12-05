@@ -45,8 +45,10 @@ public class SemanticAnalyzer {
                 }
             } else if (s instanceof ForLoop) {
                 Range range = ((ForLoop) s).getRange();
-                range.setStart(simplifyExpression(range.getStart()));
-                range.setEnd(simplifyExpression(range.getEnd()));
+                if (range != null) {
+                    range.setStart(simplifyExpression(range.getStart()));
+                    range.setEnd(simplifyExpression(range.getEnd()));
+                }
                 simplify(((ForLoop) s).getBody().getStatements());
             } else if (s instanceof WhileLoop) {
                 ((WhileLoop) s).setCondition(((WhileLoop) s).getCondition());
@@ -163,12 +165,8 @@ public class SemanticAnalyzer {
     private Expression simplifyPrimary(Expression primary) {
         if (primary instanceof Primary) {
             if (primary instanceof FunctionalLiteral) {
-                FunctionBody body = ((FunctionalLiteral) primary).getFunctionBody();
-                if (body instanceof LambdaFunction) {
-                    ((LambdaFunction) body).setExpression(simplifyExpression(((LambdaFunction) body).getExpression()));
-                } else if (body instanceof BodyFunctionBody) {
-                    simplify(((BodyFunctionBody) body).getBody().getStatements());
-                }
+                Body body = ((FunctionalLiteral) primary).getFunctionBody();
+                simplify(body.getStatements());
                 return primary;
             } else if (primary instanceof Reference) {
                 if (((Reference) primary).getTailList().isEmpty()) {
@@ -203,7 +201,19 @@ public class SemanticAnalyzer {
     }
 
     private Expression simplifyLiteral(Expression literal) {
-        if (literal instanceof Literal) {
+        if (literal instanceof ArrayLiteral) {
+            List<Expression> expressions = ((ArrayLiteral) literal).getExpressionList();
+            for(int i = 0; i < expressions.size(); i++) {
+                expressions.set(i, simplifyExpression(expressions.get(i)));
+            }
+            return literal;
+        } else if (literal instanceof TupleLiteral) {
+            List<TupleElement> elements = ((TupleLiteral) literal).getTupleElementList();
+            for (TupleElement element : elements) {
+                element.setExpression(simplifyExpression(element.getExpression()));
+            }
+            return literal;
+        } else if (literal instanceof Literal) {
             return literal;
         } else {
             return null;

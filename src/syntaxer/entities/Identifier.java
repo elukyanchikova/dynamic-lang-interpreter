@@ -1,9 +1,13 @@
 package syntaxer.entities;
 
 public class Identifier extends Primary {
-    String value;
+    private String value;
 
     public Identifier(String value) {
         this.value = value;
+    }
+
+    public String getName() {
+        return value;
     }
 }

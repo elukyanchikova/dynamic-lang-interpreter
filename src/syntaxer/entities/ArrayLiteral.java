@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ArrayLiteral extends Literal {
-    List<Expression> expressionList;
+    private List<Expression> expressionList;
 
     ArrayLiteral(Expression expression) {
         expressionList = new ArrayList<>();
@@ -17,5 +17,14 @@ public class ArrayLiteral extends Literal {
 
     public void addExpression(Expression expression) {
         expressionList.add(expression);
+    }
+
+    public List<Expression> getExpressionList() {
+        return expressionList;
+    }
+
+    @Override
+    public String toString() {
+        return "<Array>"; // todo
     }
 }

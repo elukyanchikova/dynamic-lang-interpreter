@@ -1,17 +1,26 @@
 package syntaxer.entities;
 
+import interpreter.ScopeTable;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class FunctionalLiteral extends Literal {
     List<Identifier> arguments;
-    FunctionBody functionBody;
+    ScopeTable scope;
+    Body functionBody;
 
-    public FunctionalLiteral(Identifier argument, FunctionBody functionBody) {
+    public FunctionalLiteral(Identifier argument, Body functionBody) {
         arguments = new ArrayList<>();
         this.functionBody = functionBody;
+        scope = new ScopeTable();
         addArgument(argument);
     }
+
+    public ScopeTable getScope() {
+        return scope;
+    }
+
 
     public FunctionalLiteral(Identifier argument) {
         arguments = new ArrayList<>();
@@ -23,11 +32,20 @@ public class FunctionalLiteral extends Literal {
         arguments.add(argument);
     }
 
-    public void setFunctionBody(FunctionBody body) {
+    public void setFunctionBody(Body body) {
         this.functionBody = body;
     }
 
-    public FunctionBody getFunctionBody() {
+    public Body getFunctionBody() {
         return functionBody;
+    }
+
+    @Override
+    public String toString() {
+        return "<Function>";
+    }
+
+    public List<Identifier> getArguments() {
+        return arguments;
     }
 }

@@ -1,7 +1,6 @@
 package syntaxer.entities;
 
 public enum RelationOperator {
-    NONE, // no operator
     LESS, // <
     LESS_EQ, // <=
     GREATER, // >

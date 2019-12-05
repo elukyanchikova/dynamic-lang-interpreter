@@ -1,9 +1,13 @@
 package syntaxer.entities;
 
 public class NamedElementTail extends Tail {
-    Identifier identifier;
+    private Identifier identifier;
 
     public NamedElementTail(Identifier identifier) {
         this.identifier = identifier;
+    }
+
+    public Identifier getIdentifier() {
+        return identifier;
     }
 }
