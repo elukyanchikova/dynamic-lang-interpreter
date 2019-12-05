@@ -45,8 +45,10 @@ public class SemanticAnalyzer {
                 }
             } else if (s instanceof ForLoop) {
                 Range range = ((ForLoop) s).getRange();
-                range.setStart(simplifyExpression(range.getStart()));
-                range.setEnd(simplifyExpression(range.getEnd()));
+                if (range != null) {
+                    range.setStart(simplifyExpression(range.getStart()));
+                    range.setEnd(simplifyExpression(range.getEnd()));
+                }
                 simplify(((ForLoop) s).getBody().getStatements());
             } else if (s instanceof WhileLoop) {
                 ((WhileLoop) s).setCondition(((WhileLoop) s).getCondition());
@@ -199,7 +201,13 @@ public class SemanticAnalyzer {
     }
 
     private Expression simplifyLiteral(Expression literal) {
-        if (literal instanceof Literal) {
+        if (literal instanceof ArrayLiteral) {
+            List<Expression> expressions = ((ArrayLiteral) literal).getExpressionList();
+            for(int i = 0; i < expressions.size(); i++) {
+                expressions.set(i, simplifyExpression(expressions.get(i)));
+            }
+            return literal;
+        } else if (literal instanceof Literal) {
             return literal;
         } else {
             return null;

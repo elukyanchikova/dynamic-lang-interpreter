@@ -157,13 +157,21 @@ public class SyntaxParser {
 
             return new WhileLoop(condition, body);
         } else if (token.equals("for")) {
-            token = getNextToken();
+            RawToken rawToken = getNextRawToken();
 
             /* Check whether the next token is `in`: we have identifier */
             Identifier identifier = null;
             if (getNextToken().equals("in")) {
-                identifier = new Identifier(token);
-            } else revertTokenPosition();
+                identifier = new Identifier(rawToken.val);
+            } else {
+                if (rawToken.type == RawToken.TokenType.IDENTIFIER) {
+                    return null;
+                }
+                revertTokenPosition();
+            }
+
+
+
 
             /* Check whether next token is not`loop`: we have range */
             Range range = null;
@@ -385,8 +393,8 @@ public class SyntaxParser {
             while (isTermSign(operator)) {
                 unary = parseUnary();
                 switch (operator) {
-                    case "*": result.addUnary(unary, MultiplicationOperator.MUL);
-                    case "/": result.addUnary(unary, MultiplicationOperator.DIV);
+                    case "*": result.addUnary(unary, MultiplicationOperator.MUL); break;
+                    case "/": result.addUnary(unary, MultiplicationOperator.DIV); break;
                 }
                 operator = getNextToken();
             }
@@ -459,6 +467,8 @@ public class SyntaxParser {
             return parseFunctionalLiteral();
         } else if (token.type == RawToken.TokenType.KEYWORD && token.val.equals("empty")) {
             return new EmptyLiteral();
+        } else if (token.type == RawToken.TokenType.KEYWORD && (token.val.equals("true") || token.val.equals("false"))) {
+            return new BooleanLiteral(Boolean.valueOf(token.val));
         }
         return null;
     }
@@ -627,9 +637,6 @@ public class SyntaxParser {
         }
         if (value.contains(".")) {
             return new RealLiteral(Double.valueOf(value));
-        }
-        if (value.equals("true") || value.equals("false")) {
-            return new BooleanLiteral(Boolean.valueOf(value));
         }
         return new IntegerLiteral(Integer.valueOf(value));
     }

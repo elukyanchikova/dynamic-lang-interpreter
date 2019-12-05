@@ -1,15 +1,22 @@
-var abc := [abc, asd, qwe + ewq]
-var io := 5
+var abc := [111, 5, 4]
+var io := 5 + 3
 var c := empty
+var square := func (x) is
+    print x
+    return x + x
+end
+print io * io
+print square(io)
+var cond := false
 var d := 3.65
+print io, c, d
 var iss
-print abc + basd
-for i1 in 1 .. 25 loop
-    var a := 6
-    a := a + b
+print abc[0]
+if cond or false then
+    print 1
+    print 123
 end
-if a >= b then
-    shut := the + system
+for iii in 1 .. 25 loop
+    print iii
 end
-var booleansh := a <= b * 25
-return zal
+print booleansh

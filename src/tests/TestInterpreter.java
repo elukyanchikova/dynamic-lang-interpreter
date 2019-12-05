@@ -1,6 +1,7 @@
 package tests;
 
 import interpreter.Interpreter;
+import semanter.SemanticAnalyzer;
 import syntaxer.SyntaxParser;
 import syntaxer.entities.Program;
 
@@ -11,9 +12,10 @@ public class TestInterpreter {
         Program program = null;
         try {
             program = new SyntaxParser("./test_programs/simple.pas").parse();
+            program = new SemanticAnalyzer(program).getAst();
             Interpreter interpreter = new Interpreter(program);
             interpreter.execute();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
