@@ -52,12 +52,65 @@ public class Interpreter {
     Assignment assignment = (Assignment) statement;
   }
 
+  /**
+   * Executes loops, which can be either `while` or `for` loops.
+   */
   private void executeLoop(Statement statement) {
     Loop loop = (Loop) statement;
+
+    if (loop instanceof WhileLoop) executeWhileLoop(loop);
+    else if (loop instanceof ForLoop) executeForLoop(loop);
   }
 
+  /**
+   * Executes `while` loops.
+   * Syntax: `while Expression loop Body end`
+   */
+  private void executeWhileLoop(Loop loop) {
+    WhileLoop wl = (WhileLoop) loop;
+
+    Expression condition = wl.getCondition();
+
+    while (evaluateExpressionToBoolean(condition)) {
+      evaluateBody(wl.getBody());
+    }
+  }
+
+  private void executeForLoop(Loop loop) {
+    // todo
+  }
+
+  /**
+   * Executes `if` statements.
+   * Syntax: `if Expression then Body [ else Body ] end`
+   */
   private void executeIf(Statement statement) {
     If ifStatement = (If) statement;
+    Expression condition = ifStatement.getCondition();
+
+    boolean isConditionTrue = evaluateExpressionToBoolean(condition);
+
+    /* Execute body if condition is true */
+    if (condition) {
+      executeBody(ifStatement.getThenBody());
+    } else if (ifStatement.getElseBody() != null) {
+      executeBody(ifStatement.getElseBody());
+    }
+  }
+
+  /**
+   * Evaluates expressions to boolean values.
+   * @throws RuntimeException In case that expression evaluated is not boolean.
+   */
+  private boolean evaluateExpressionToBoolean(Expression expr) {
+    ScopeTable.ValueTypeWrapper result = evaluateExpression(condition);
+
+    /* Condition should evaluate to Boolean value */
+    if (result.type != TypeIndicator.BOOL) {
+      throw new RuntimeException("Invalid condition"); // todo exc
+    }
+
+    return ((BooleanLiteral) result.value).value;
   }
 
   private void executePrint(Statement statement) {
@@ -80,6 +133,10 @@ public class Interpreter {
 
   private void executeReturn(Statement statement) {
     Return returnStatement = (Return) statement;
+  }
+
+  private void executeBody(Body body) {
+    // todo
   }
 
   private ScopeTable.ValueTypeWrapper evaluateExpression(Expression expr) {
