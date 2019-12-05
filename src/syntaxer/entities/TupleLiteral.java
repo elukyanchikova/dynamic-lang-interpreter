@@ -14,4 +14,9 @@ public class TupleLiteral extends Literal {
     public void addElement(TupleElement tupleElement) {
         tupleElementList.add(tupleElement);
     }
+
+    @Override
+    public String toString() {
+        return "<Tuple>"; // todo
+    }
 }

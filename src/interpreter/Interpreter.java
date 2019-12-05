@@ -15,18 +15,18 @@ public class Interpreter {
         this.parentScope = parentScope;
     }
 
-    public void execute() {
-        List<Statement> statements = program.getStatements();
-        for (Statement statement : statements) {
-            if (statement instanceof Declaration) executeVariableDeclaration(statement);
-            else if (statement instanceof Assignment) executeAssignment(statement);
-            else if (statement instanceof Loop) executeVariableDeclaration(statement);
-            else if (statement instanceof If) executeVariableDeclaration(statement);
-            else if (statement instanceof Print) executeVariableDeclaration(statement);
-            else if (statement instanceof Return) executeVariableDeclaration(statement);
-            else System.out.println("Sheeesh, null Statement");
-        }
+  public void execute() {
+    List<Statement> statements = program.getStatements();
+    for (Statement statement : statements) {
+      if (statement instanceof Declaration) executeVariableDeclaration(statement);
+      else if (statement instanceof Assignment) executeAssignment(statement);
+      else if (statement instanceof Loop) executeVariableDeclaration(statement);
+      else if (statement instanceof If) executeVariableDeclaration(statement);
+      else if (statement instanceof Print) executeVariableDeclaration(statement);
+      else if (statement instanceof Return) executeVariableDeclaration(statement);
+      else System.out.println("Sheeesh, null Statement");
     }
+  }
 
     private void executeVariableDeclaration(Statement statement) {
         Declaration declaration = (Declaration) statement;
@@ -67,22 +67,96 @@ public class Interpreter {
         Assignment assignment = (Assignment) statement;
     }
 
-    private void executeLoop(Statement statement) {
-        Loop loop = (Loop) statement;
+  /**
+   * Executes loops, which can be either `while` or `for` loops.
+   */
+  private void executeLoop(Statement statement) {
+    Loop loop = (Loop) statement;
+
+    if (loop instanceof WhileLoop) executeWhileLoop(loop);
+    else if (loop instanceof ForLoop) executeForLoop(loop);
+  }
+
+  /**
+   * Executes `while` loops.
+   * Syntax: `while Expression loop Body end`
+   */
+  private void executeWhileLoop(Loop loop) {
+    WhileLoop wl = (WhileLoop) loop;
+
+    Expression condition = wl.getCondition();
+
+    while (evaluateExpressionToBoolean(condition)) {
+      evaluateBody(wl.getBody());
+    }
+  }
+
+  private void executeForLoop(Loop loop) {
+    // todo
+  }
+
+  /**
+   * Executes `if` statements.
+   * Syntax: `if Expression then Body [ else Body ] end`
+   */
+  private void executeIf(Statement statement) {
+    If ifStatement = (If) statement;
+    Expression condition = ifStatement.getCondition();
+
+    boolean isConditionTrue = evaluateExpressionToBoolean(condition);
+
+    /* Execute body if condition is true */
+    if (condition) {
+      executeBody(ifStatement.getThenBody());
+    } else if (ifStatement.getElseBody() != null) {
+      executeBody(ifStatement.getElseBody());
+    }
+  }
+
+  /**
+   * Evaluates expressions to boolean values.
+   * @throws RuntimeException In case that expression evaluated is not boolean.
+   */
+  private boolean evaluateExpressionToBoolean(Expression expr) {
+    ScopeTable.ValueTypeWrapper result = evaluateExpression(condition);
+
+    /* Condition should evaluate to Boolean value */
+    if (result.type != TypeIndicator.BOOL) {
+      throw new RuntimeException("Invalid condition"); // todo exc
     }
 
-    private void executeIf(Statement statement) {
-        If ifStatement = (If) statement;
+    return ((BooleanLiteral) result.value).value;
+  }
+
+  private void executePrint(Statement statement) {
+    Print printStatement = (Print) statement;
+    StringBuilder sb = new StringBuilder();
+
+    /* Run through all the expressions and evaluate them */
+    for (Expression expression : printStatement.getExpressions()) {
+      ScopeTable.ValueTypeWrapper result = evaluateExpression(expression);
+
+      sb.append(" ").append(result.value.toString());
     }
 
-    private void executePrint(Statement statement) {
-        Print printStatement = (Print) statement;
-    }
+    /* Remove extra space at the beginning got by appending (if there is) */
+    if (sb.length() > 0) sb.deleteCharAt(0);
+
+    /* Print */
+    System.out.printf("%s\n", sb.toString());
+  }
 
     private void executeReturn(Statement statement) {
         Return returnStatement = (Return) statement;
     }
 
+  private void executeBody(Body body) {
+    // todo
+  }
+
+  private ScopeTable.ValueTypeWrapper evaluateExpression(Expression expr) {
+    return null;
+  }
 
     private void exectuteFunction(FunctionalLiteral functionalLiteral){
         List<Identifier> identifiers = functionalLiteral.getArguments();
@@ -100,9 +174,5 @@ public class Interpreter {
 //
 //        for (Identifier identifier : identifiers) {
 //        System.out.println(this.scope.get(identifier.getName()));}
-    }
-
-    private ScopeTable.ValueTypeWrapper evaluateExpression(Expression expr) {
-        return null;
     }
 }

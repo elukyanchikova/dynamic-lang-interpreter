@@ -6,4 +6,9 @@ public class BooleanLiteral extends Literal {
     public BooleanLiteral(Boolean value) {
         this.value = value;
     }
+
+    @Override
+    public String toString() {
+        return String.valueOf(value);
+    }
 }

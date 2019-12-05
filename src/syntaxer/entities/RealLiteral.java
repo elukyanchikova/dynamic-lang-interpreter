@@ -6,4 +6,9 @@ public class RealLiteral extends Literal {
     public RealLiteral(Double value) {
         this.value = value;
     }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
 }

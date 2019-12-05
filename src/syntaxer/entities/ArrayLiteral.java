@@ -18,4 +18,9 @@ public class ArrayLiteral extends Literal {
     public void addExpression(Expression expression) {
         expressionList.add(expression);
     }
+
+    @Override
+    public String toString() {
+        return "<Array>"; // todo
+    }
 }
