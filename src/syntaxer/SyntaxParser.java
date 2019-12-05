@@ -30,6 +30,7 @@ public class SyntaxParser {
         if (mTokenPosition >= mTokens.size()) {
             System.out.println("Syntax analyzing finished");
         } else {
+            // TODO: Syntax error info showing error line with position
             System.out.println("Syntax error");
         }
         return program;
