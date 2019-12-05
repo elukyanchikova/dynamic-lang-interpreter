@@ -53,11 +53,15 @@ public class Interpreter {
 
     } else if (expr instanceof Unary) {
       if (expr instanceof Is) {
+        ScopeTable.ValueTypeWrapper asd = evaluateExpression(((Is) expr).getPrimary());
+        if (((Is) expr).getTypeIndicator() == asd.type) {
+          return new ScopeTable.ValueTypeWrapper(TypeIndicator.BOOL, new BooleanLiteral(true));
+        }
 
       }
-    } else if (expr instanceof IntegerLiteral) {
+    } else {
 
-    } else if (expr instanceof )
+    }
   }
 
 

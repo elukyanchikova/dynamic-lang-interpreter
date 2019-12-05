@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 public class ScopeTable extends HashMap<String, ScopeTable.ValueTypeWrapper> {
 
-    class ValueTypeWrapper{
+    static class ValueTypeWrapper{
         TypeIndicator type;
         Literal value;
 
