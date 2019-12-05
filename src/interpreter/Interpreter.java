@@ -62,6 +62,20 @@ public class Interpreter {
 
   private void executePrint(Statement statement) {
     Print printStatement = (Print) statement;
+    StringBuilder sb = new StringBuilder();
+
+    /* Run through all the expressions and evaluate them */
+    for (Expression expression : printStatement.getExpressions()) {
+      ScopeTable.ValueTypeWrapper result = evaluateExpression(expression);
+
+      sb.append(" ").append(result.value.toString());
+    }
+
+    /* Remove extra space at the beginning got by appending (if there is) */
+    if (sb.length() > 0) sb.deleteCharAt(0);
+
+    /* Print */
+    System.out.printf("%s\n", sb.toString());
   }
 
   private void executeReturn(Statement statement) {
