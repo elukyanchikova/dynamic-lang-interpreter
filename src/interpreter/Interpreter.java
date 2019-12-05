@@ -86,14 +86,99 @@ public class Interpreter {
         WhileLoop wl = (WhileLoop) loop;
 
         Expression condition = wl.getCondition();
+        if (condition == null) {
+            throw new RuntimeException("Syntax error: loop condition cannot be empty");
+        }
 
         while (evaluateExpressionToBoolean(condition)) {
-            evaluateBody(wl.getBody());
+            executeBody(wl.getBody());
         }
     }
 
+    /**
+     * Executes `for` loops.
+     * Syntax: `for [ IDENT in ] [ Expression '..' Expression ] loop Body end`
+     */
     private void executeForLoop(Loop loop) {
-        // todo
+        ForLoop fl = (ForLoop) loop;
+        Identifier loopCounter = fl.getCounter();
+        Range loopRange = fl.getRange();
+        Body loopBody = fl.getBody();
+
+        /* Check for counter (and load if present) */
+        ScopeTable.ValueTypeWrapper counter = null;
+        boolean isCounterVariableCreated = false;
+        if (loopCounter != null) {
+            counter = findVariableInScope(loopCounter.getName());
+
+            /* Create counter value if it doesn't exist */
+            if (counter == null) {
+                counter = new ScopeTable.ValueTypeWrapper(TypeIndicator.INT, new IntegerLiteral(0));
+                this.scope.put(loopCounter.getName());
+                isCounterVariableCreated = true;
+            }
+        }
+
+        /* Check for range (and evaluate if present) */
+        ScopeTable.ValueTypeWrapper rangeStart = null;
+        ScopeTable.ValueTypeWrapper rangeEnd = null;
+        if (loopRange != null) {
+            if (loopRange.getStart() == null) {
+                throw new RuntimeException("Syntax error: loop range start cannot be empty");
+            }
+            if (loopRange.getEnd() == null) {
+                throw new RuntimeException("Syntax error: loop range end cannot be empty");
+            }
+
+            rangeStart = evaluateExpression(loopRange.getStart());
+            rangeEnd = evaluateExpression(loopRange.getEnd());
+        }
+
+        /* No range present: launch an infinite loop (say goodbye) */
+        if (rangeStart == null || rangeEnd == null) {
+            for (;;) {
+                /* Update counter if needed */
+                if (counter != null) {
+                    counter.value = new IntegerLiteral(i);
+                }
+
+                /* Run body */
+                executeBody(loopBody);
+            }
+            return;
+        }
+
+        /*
+         * Range is present
+         */
+
+        /* Range can be only of two integers */
+        if (rangeStart.type != TypeIndicator.INT) {
+            throw new RuntimeException("Range start must be an integer");
+        }
+        if (rangeEnd.type != TypeIndicator.INT) {
+            throw new RuntimeException("Range end must be an integer");
+        }
+
+        /* Define loop start and end */
+        final int rangeStartInt = ((IntegerLiteral) rangeStart.value).value;
+        final int rangeEndInt = ((IntegerLiteral) rangeEnd.value).value;
+
+        /* Run loop */
+        for (int i = rangeStartInt; i < rangeEndInt; i++) {
+            /* Update counter if needed */
+            if (counter != null) {
+                counter.value = new IntegerLiteral(i);
+            }
+
+            /* Run body */
+            executeBody(loopBody);
+        }
+
+        /* Clean up the scope */
+        if (isCounterVariableCreated) {
+            this.scope.remove(loopCounter.getName());
+        }
     }
 
     /**
@@ -102,9 +187,9 @@ public class Interpreter {
      */
     private void executeIf(Statement statement) {
         If ifStatement = (If) statement;
-        Expression condition = ifStatement.getCondition();
+        Expression ifCondition = ifStatement.getCondition();
 
-        boolean isConditionTrue = evaluateExpressionToBoolean(condition);
+        boolean condition = evaluateExpressionToBoolean(ifCondition);
 
         /* Execute body if condition is true */
         if (condition) {
