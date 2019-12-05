@@ -1,6 +1,8 @@
 var abc := [abc, asd, qwe + ewq]
-var io := 4
-var iss := 5 + io
+var io := 5
+var c := empty
+var d := 3.65
+var iss
 print abc + basd
 for i1 in 1 .. 25 loop
     var a := 6

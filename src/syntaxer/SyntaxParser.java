@@ -456,6 +456,8 @@ public class SyntaxParser {
             return parseLiteral();
         } else if (token.type == RawToken.TokenType.KEYWORD && token.val.equals("func")) {
             return parseFunctionalLiteral();
+        } else if (token.type == RawToken.TokenType.KEYWORD && token.val.equals("empty")) {
+            return new EmptyLiteral();
         }
         return null;
     }
@@ -627,9 +629,6 @@ public class SyntaxParser {
         }
         if (value.equals("true") || value.equals("false")) {
             return new BooleanLiteral(Boolean.valueOf(value));
-        }
-        if (value.equals("empty")) {
-            return new EmptyLiteral();
         }
         return new IntegerLiteral(Integer.valueOf(value));
     }
