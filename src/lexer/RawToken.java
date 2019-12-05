@@ -42,9 +42,8 @@ public class RawToken {
     private Boolean consistLegal() {
         char[] temp = this.val.toCharArray();
         for (int i = 0; i < temp.length; i++) {
-            if (!((int) temp[i] == (int) '_' ||
-                    (65 <= (int) temp[i]) && ((int) temp[i] <= 90) ||
-                    (97 <= (int) temp[i]) && (int) temp[i] <= 122)) {
+            if (!(((int) temp[i] == (int) '_') || ((65 <= (int) temp[i]) && ((int) temp[i] <= 90)) || (((97 <= (int) temp[i]) && (int) temp[i] <= 122)) || (i != 0 && ((48 <= (int) temp[i]) && ((int) temp[i] <= 57)))))
+            {
                 return false;
             } else {
                 if (this.lexicalAnalysis.getOperatorsList().containsValue(String.valueOf(temp[i])) ||
