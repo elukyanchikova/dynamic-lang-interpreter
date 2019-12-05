@@ -43,7 +43,21 @@ public class Interpreter {
   }
 
   private ScopeTable.ValueTypeWrapper evaluateExpression(Expression expr) {
-    return null;
+    if (expr instanceof ExpressionComplex) {
+
+    } else if (expr instanceof Relation) {
+
+    } else if (expr instanceof Factor) {
+
+    } else if (expr instanceof Term) {
+
+    } else if (expr instanceof Unary) {
+      if (expr instanceof Is) {
+
+      }
+    } else if (expr instanceof IntegerLiteral) {
+
+    } else if (expr instanceof )
   }
 
 
