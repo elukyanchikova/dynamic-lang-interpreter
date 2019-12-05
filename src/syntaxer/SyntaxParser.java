@@ -622,7 +622,7 @@ public class SyntaxParser {
         if (value.startsWith("\"") || value.startsWith("'")) {
             return new StringLiteral(value);
         }
-        if (value.contains("")) {
+        if (value.contains(".")) {
             return new RealLiteral(Double.valueOf(value));
         }
         if (value.equals("true") || value.equals("false")) {

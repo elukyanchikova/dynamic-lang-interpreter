@@ -2,7 +2,6 @@ package interpreter;
 
 import syntaxer.entities.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Interpreter {
@@ -39,11 +38,11 @@ public class Interpreter {
       throw new RuntimeException("Variable already defined!");
     }
 
-    this.scope.put(identifier.getName(), executeExpression(variableDefinition.getExpression()));
+    this.scope.put(identifier.getName(), evaluateExpression(variableDefinition.getExpression()));
     System.out.printf("Added identifier %s, value %s\n", identifier.getName(), "null");
   }
 
-  private ScopeTable.ValueTypeWrapper executeExpression(Expression expr) {
+  private ScopeTable.ValueTypeWrapper evaluateExpression(Expression expr) {
     return null;
   }
 
