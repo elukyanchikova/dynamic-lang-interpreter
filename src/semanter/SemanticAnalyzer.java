@@ -163,12 +163,8 @@ public class SemanticAnalyzer {
     private Expression simplifyPrimary(Expression primary) {
         if (primary instanceof Primary) {
             if (primary instanceof FunctionalLiteral) {
-                FunctionBody body = ((FunctionalLiteral) primary).getFunctionBody();
-                if (body instanceof LambdaFunction) {
-                    ((LambdaFunction) body).setExpression(simplifyExpression(((LambdaFunction) body).getExpression()));
-                } else if (body instanceof BodyFunctionBody) {
-                    simplify(((BodyFunctionBody) body).getBody().getStatements());
-                }
+                Body body = ((FunctionalLiteral) primary).getFunctionBody();
+                simplify(body.getStatements());
                 return primary;
             } else if (primary instanceof Reference) {
                 if (((Reference) primary).getTailList().isEmpty()) {

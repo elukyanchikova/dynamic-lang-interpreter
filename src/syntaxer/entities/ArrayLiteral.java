@@ -22,4 +22,9 @@ public class ArrayLiteral extends Literal {
     public List<Expression> getExpressionList() {
         return expressionList;
     }
+
+    @Override
+    public String toString() {
+        return "<Array>"; // todo
+    }
 }

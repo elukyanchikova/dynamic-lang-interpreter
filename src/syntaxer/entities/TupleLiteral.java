@@ -38,4 +38,9 @@ public class TupleLiteral extends Literal {
         return tupleElementList.get(index + 1);
     }
 
+
+    @Override
+    public String toString() {
+        return "<Tuple>"; // todo
+    }
 }
