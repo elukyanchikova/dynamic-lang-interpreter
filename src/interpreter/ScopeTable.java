@@ -9,11 +9,27 @@ import java.util.HashMap;
 public class ScopeTable extends HashMap<String, ScopeTable.ValueTypeWrapper> {
 
     static class ValueTypeWrapper{
-        TypeIndicator type;
-        Literal value;
+        private TypeIndicator type;
+        private Literal value;
 
         public ValueTypeWrapper(TypeIndicator type, Literal value) {
             this.type = type;
+            this.value = value;
+        }
+
+        public Literal getValue() {
+            return value;
+        }
+
+        public TypeIndicator getType() {
+            return type;
+        }
+
+        public void setType(TypeIndicator type) {
+            this.type = type;
+        }
+
+        public void setValue(Literal value) {
             this.value = value;
         }
     }
