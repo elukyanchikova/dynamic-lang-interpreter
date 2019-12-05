@@ -7,13 +7,13 @@ import java.util.List;
 
 public class Interpreter {
     private ScopeTable scope;
-    private ScopeTable parentScope;
+    private Interpreter parent;
     private Program program;
 
-    public Interpreter(Program program, ScopeTable parentScope) {
+    public Interpreter(Program program, Interpreter parent) {
         this.program = program;
         this.scope = new ScopeTable();
-        this.parentScope = parentScope;
+        this.parent = parent;
     }
 
     public Interpreter(Program program) {
@@ -27,13 +27,21 @@ public class Interpreter {
     public ScopeTable.ValueTypeWrapper execute() throws Exception {
         List<Statement> statements = program.getStatements();
         for (Statement statement : statements) {
-            if (statement instanceof Declaration) executeVariableDeclaration(statement);
-            else if (statement instanceof Assignment) executeAssignment(statement);
-            else if (statement instanceof Loop) executeLoop(statement);
-            else if (statement instanceof If) executeIf(statement);
-            else if (statement instanceof Print) executePrint(statement);
-            else if (statement instanceof Return) return executeReturn(statement);
-            else System.out.println("Sheeesh, null Statement");
+            try {
+                if (statement instanceof Declaration) executeVariableDeclaration(statement);
+                else if (statement instanceof Assignment) executeAssignment(statement);
+                else if (statement instanceof Loop) executeLoop(statement);
+                else if (statement instanceof If) executeIf(statement);
+                else if (statement instanceof Print) executePrint(statement);
+                else if (statement instanceof Return) return executeReturn(statement);
+                else System.out.println("Sheeesh, null Statement");
+            } catch (Exception ex) {
+                if (parent != null) {
+                    throw ex;
+                } else {
+                    ex.printStackTrace();
+                }
+            }
         }
         return null;
     }
@@ -123,6 +131,7 @@ public class Interpreter {
                             String termValue = ((StringLiteral) termWrapper.getValue()).getValue();
                             String resultingString = resultValue + termValue;
                             ((StringLiteral) result.getValue()).setValue(resultingString);
+                            continue;
                         } else {
                             throw new Exception("Runtime Error: Concatenating string value with non string value");
                         }
@@ -131,6 +140,7 @@ public class Interpreter {
                         if (termWrapper.getType() == TypeIndicator.VECTOR) {
                             List<Expression> secondArray = ((ArrayLiteral) termWrapper.getValue()).getExpressionList();
                             ((ArrayLiteral) result.getValue()).getExpressionList().addAll(secondArray);
+                            continue;
                         } else {
                             throw new Exception("Runtime Error: Concatenating array value with non array value");
                         }
@@ -141,6 +151,7 @@ public class Interpreter {
                             for (TupleElement element : secondTuple) {
                                 ((TupleLiteral) result.getValue()).addElement(element);
                             }
+                            continue;
                         } else {
                             throw new Exception("Runtime Error: Concatenating tuple value with non tuple value");
                         }
@@ -354,16 +365,25 @@ public class Interpreter {
     private ScopeTable.ValueTypeWrapper findVariableInScope(String key) {
 
         ScopeTable currentScope = this.scope;
-        while (currentScope != null) {
-            if (currentScope.get(key) != null) {
-                return currentScope.get(key);
-            } else currentScope = this.parentScope;
+        if (currentScope.get(key) != null) {
+            return currentScope.get(key);
+        } else {
+            if (this.parent == null) return null;
+            return this.parent.findVariableInScope(key);
         }
-        return null;
     }
 
-    private void executeAssignment(Statement statement) {
+    private void executeAssignment(Statement statement) throws Exception {
         Assignment assignment = (Assignment) statement;
+        ScopeTable.ValueTypeWrapper value = evaluateExpression(((Assignment) statement).getExpression());
+        String variableName = assignment.getReference().getIdentifier().getName();
+        ScopeTable.ValueTypeWrapper variable = this.findVariableInScope(variableName);
+        if (variable == null) {
+            throw new RuntimeException(String.format("Runtime exception: variable %s not defined", variableName));
+        }
+
+        variable.setType(value.getType());
+        variable.setValue(value.getValue());
     }
 
     /**
@@ -441,9 +461,13 @@ public class Interpreter {
                     counter.setValue(new IntegerLiteral(oldValue.getValue() + 1));
                 }
 
-                /* Run body */
-                // TODO: return if loop contains return statement
-                executeBody(loopBody);
+                /* Try to run body */
+                try {
+                    // TODO: return if loop contains return statement
+                    executeBody(loopBody);
+                } catch (Exception e) {
+                    break;
+                }
             }
         }
 
@@ -471,7 +495,11 @@ public class Interpreter {
             }
 
             /* Run body */
-            executeBody(loopBody);
+            try {
+                executeBody(loopBody);
+            } catch (Exception e) {
+                break;
+            }
         }
 
         /* Clean up the scope */
@@ -540,7 +568,7 @@ public class Interpreter {
         Program program = new Program();
         program.setStatements(body.getStatements());
 
-        Interpreter interpreter = new Interpreter(program, this.scope);
+        Interpreter interpreter = new Interpreter(program, this);
         return interpreter.execute();
     }
 
@@ -560,7 +588,7 @@ public class Interpreter {
         Program program = new Program();
         program.setStatements(statements);
 
-        Interpreter interpreter = new Interpreter(program, this.scope);
+        Interpreter interpreter = new Interpreter(program, this);
 
         for (int i = 0; i < identifiers.size(); i++) {
             interpreter.getScope().put(identifiers.get(i).getName(), this.evaluateExpression(arguments.get(i)));

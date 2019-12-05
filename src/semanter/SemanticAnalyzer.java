@@ -207,6 +207,12 @@ public class SemanticAnalyzer {
                 expressions.set(i, simplifyExpression(expressions.get(i)));
             }
             return literal;
+        } else if (literal instanceof TupleLiteral) {
+            List<TupleElement> elements = ((TupleLiteral) literal).getTupleElementList();
+            for (TupleElement element : elements) {
+                element.setExpression(simplifyExpression(element.getExpression()));
+            }
+            return literal;
         } else if (literal instanceof Literal) {
             return literal;
         } else {

@@ -12,10 +12,14 @@ public class TupleLiteral extends Literal {
     }
 
     public void addElement(TupleElement tupleElement) {
-        for(int i = 0; i < tupleElementList.size(); i++) {
-            if (tupleElementList.get(i).getIdentifier().getName().equals(tupleElement.getIdentifier().getName())) {
-                tupleElementList.remove(i);
-                break;
+        if (tupleElement.getIdentifier() != null) {
+            for(int i = 0; i < tupleElementList.size(); i++) {
+                if (tupleElementList.get(i).getIdentifier() != null) {
+                    if (tupleElementList.get(i).getIdentifier().getName().equals(tupleElement.getIdentifier().getName())) {
+                        tupleElementList.remove(i);
+                        break;
+                    }
+                }
             }
         }
         tupleElementList.add(tupleElement);
@@ -35,7 +39,7 @@ public class TupleLiteral extends Literal {
     }
 
     public TupleElement getElement(int index) {
-        return tupleElementList.get(index + 1);
+        return tupleElementList.get(index - 1);
     }
 
 

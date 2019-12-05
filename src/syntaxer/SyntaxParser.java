@@ -32,6 +32,8 @@ public class SyntaxParser {
         } else {
             // TODO: Syntax error info showing error line with position
             System.out.println("Syntax error");
+            RawToken token = getRawToken(mTokenPosition);
+            System.out.printf("line: %d pos: %d\n value: %s\n", token.line, token.position, token.val);
         }
         return program;
     }
@@ -273,7 +275,7 @@ public class SyntaxParser {
     private Tail parseTail() {
         RawToken token = getNextRawToken();
         if (token == null) return null;
-        if (token.val.equals("")) {
+        if (token.val.equals(".")) {
             token = getNextRawToken();
             if(token == null) return null;
             if(token.type == RawToken.TokenType.IDENTIFIER) {
@@ -306,6 +308,7 @@ public class SyntaxParser {
                 expression = parseExpression();
                 if (expression == null) return null;
                 result.addArgument(expression);
+                token = getNextRawToken();
             }
             if (!token.val.equals(")")) return null;
             return result;
@@ -485,6 +488,7 @@ public class SyntaxParser {
             token = getNextRawToken();
             if (token.type != RawToken.TokenType.IDENTIFIER) return null;
             result.addArgument(new Identifier(token.val));
+            token = getNextRawToken();
         }
         if (!token.val.equals(")")) return null;
         token = getNextRawToken();
@@ -498,7 +502,7 @@ public class SyntaxParser {
             token = getNextRawToken();
             if (!token.val.equals("end")) return null;
             return result;
-        } else if (token.val.equals(">=")){
+        } else if (token.val.equals("=>")){
             Expression expression = parseExpression();
             if (expression == null) return null;
             result.setFunctionBody(new Body(new Return(expression)));
@@ -633,7 +637,7 @@ public class SyntaxParser {
     private Literal parsePrimitiveLiteral() {
         String value = getNextToken();
         if (value.startsWith("\"") || value.startsWith("'")) {
-            return new StringLiteral(value);
+            return new StringLiteral(value.substring(1, value.length() - 1));
         }
         if (value.contains(".")) {
             return new RealLiteral(Double.valueOf(value));
