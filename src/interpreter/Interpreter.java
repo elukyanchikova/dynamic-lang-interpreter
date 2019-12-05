@@ -15,11 +15,11 @@ public class Interpreter {
         this.parentScope = parentScope;
     }
 
-    public ScopeTable getScope() {
+    private ScopeTable getScope() {
         return scope;
     }
 
-    public ScopeTable.ValueTypeWrapper execute() {
+    public ScopeTable.ValueTypeWrapper execute() throws Exception {
         List<Statement> statements = program.getStatements();
         for (Statement statement : statements) {
             if (statement instanceof Declaration) executeVariableDeclaration(statement);
@@ -30,9 +30,7 @@ public class Interpreter {
             else if (statement instanceof Return) return executeReturn(statement);
             else System.out.println("Sheeesh, null Statement");
         }
-
         return null;
-
     }
 
   private void executeVariableDeclaration(Statement statement) throws Exception {
@@ -233,12 +231,15 @@ public class Interpreter {
         } else if (expr instanceof Reference) {
           Identifier id = ((Reference) expr).getIdentifier();
           ScopeTable.ValueTypeWrapper wrapper = findVariableInScope(id.getName());
+          if (wrapper == null) {
+            throw new Exception(String.format("Runtime Error: Undefined variable %s", id.getName()));
+          }
           List<Tail> tails = ((Reference) expr).getTailList();
           for (Tail tail : tails) {
             // Function call: funcName()
             if (tail instanceof FunctionCallTail) {
               if (wrapper.getType() == TypeIndicator.FUNC) {
-                wrapper = executeFunction(wrapper.getValue());
+                wrapper = executeFunction((FunctionalLiteral) wrapper.getValue());
               } else {
                 throw new Exception("Runtime Error: Applying call method to non function value");
               }
@@ -275,6 +276,7 @@ public class Interpreter {
               throw new Exception("Interpreter Error: Tail list element is not child of Tail class");
             }
           }
+          return wrapper;
         } else if (expr instanceof Literal) {
           if (expr instanceof IntegerLiteral) {
             return new ScopeTable.ValueTypeWrapper(TypeIndicator.INT, (Literal) expr);
@@ -369,13 +371,13 @@ public class Interpreter {
         Print printStatement = (Print) statement;
     }
 
-    private ScopeTable.ValueTypeWrapper executeReturn(Statement statement) {
+    private ScopeTable.ValueTypeWrapper executeReturn(Statement statement) throws Exception {
         Return returnStatement = (Return) statement;
         return evaluateExpression(returnStatement.getExpression());
     }
 
 
-    private ScopeTable.ValueTypeWrapper exectuteFunction(FunctionalLiteral functionalLiteral){
+    private ScopeTable.ValueTypeWrapper executeFunction(FunctionalLiteral functionalLiteral) throws Exception {
         List<Identifier> identifiers = functionalLiteral.getArguments();
 
         List<Statement> statements = functionalLiteral.getFunctionBody().getStatements();
@@ -394,7 +396,4 @@ public class Interpreter {
 //        System.out.println(this.scope.get(identifier.getName()));}
     }
 
-    private ScopeTable.ValueTypeWrapper evaluateExpression(Expression expr) {
-        return null;
-    }
 }
