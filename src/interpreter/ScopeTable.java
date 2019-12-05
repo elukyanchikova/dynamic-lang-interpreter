@@ -6,7 +6,7 @@ import syntaxer.entities.TypeIndicator;
 import java.util.HashMap;
 
 
-public class ScopeTable<String, ValueTypeWrapper> extends HashMap<String, ValueTypeWrapper> {
+public class ScopeTable extends HashMap<String, ScopeTable.ValueTypeWrapper> {
 
     class ValueTypeWrapper{
         TypeIndicator type;
@@ -27,4 +27,8 @@ public class ScopeTable<String, ValueTypeWrapper> extends HashMap<String, ValueT
         return super.put(key, value);
     }
 
+    @Override
+    public ValueTypeWrapper get(Object key) {
+        return super.get(key);
+    }
 }
