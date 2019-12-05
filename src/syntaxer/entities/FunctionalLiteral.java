@@ -39,4 +39,8 @@ public class FunctionalLiteral extends Literal {
     public Body getFunctionBody() {
         return functionBody;
     }
+
+    public List<Identifier> getArguments() {
+        return arguments;
+    }
 }

@@ -14,6 +14,10 @@ public class Program {
         this.statements.add(statement);
     }
 
+    public void setStatements(List<Statement> statements) {
+        this.statements = statements;
+    }
+
     public List<Statement> getStatements() {
         return this.statements;
     }
