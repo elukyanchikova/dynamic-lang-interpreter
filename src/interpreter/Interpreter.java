@@ -46,47 +46,123 @@ public class Interpreter {
 
   private ScopeTable.ValueTypeWrapper evaluateExpression(Expression expr) throws Exception {
     if (expr instanceof ExpressionComplex) {
-
+      ScopeTable.ValueTypeWrapper firstRelation = evaluateExpression(((ExpressionComplex) expr).getRelationList().get(0));
+      ScopeTable.ValueTypeWrapper secondRelation = evaluateExpression(((ExpressionComplex) expr).getRelationList().get(1));
+      LogicalOperator op = ((ExpressionComplex) expr).getLogicalOperator1List().get(1);
+      boolean firstValue = ((BooleanLiteral) firstRelation.getValue()).getValue();
+      boolean secondValue = ((BooleanLiteral) secondRelation.getValue()).getValue();
+      boolean res;
+      if (firstRelation.getType() == TypeIndicator.BOOL && secondRelation.getType() == TypeIndicator.BOOL) {
+        if (op == LogicalOperator.XOR) {
+          res = firstValue ^ secondValue;
+        } else if (op == LogicalOperator.OR) {
+          res = firstValue || secondValue;
+        } else if (op == LogicalOperator.AND) {
+          res = firstValue && secondValue;
+        } else {
+          throw new Exception("Interpreter Error: Unexpected logical operator");
+        }
+        return new ScopeTable.ValueTypeWrapper(TypeIndicator.BOOL, new BooleanLiteral(res));
+      } else {
+        throw new Exception("Runtime Error: Logical operetion between non boolean values");
+      }
     } else if (expr instanceof Relation) {
-
+      ScopeTable.ValueTypeWrapper firstFactor = evaluateExpression(((Relation) expr).getFirstFactor());
+      ScopeTable.ValueTypeWrapper secondFactor = evaluateExpression(((Relation) expr).getSecondFactor());
+      RelationOperator op = ((Relation) expr).getOperator();
+      if ((firstFactor.getType() == TypeIndicator.INT || firstFactor.getType() == TypeIndicator.REAL)
+          && (secondFactor.getType() == TypeIndicator.INT || secondFactor.getType() == TypeIndicator.REAL)) {
+        double firstValue = getNumericValue(firstFactor);
+        double secondValue = getNumericValue(secondFactor);
+        boolean res;
+        if (op == RelationOperator.LESS) {
+          res = firstValue < secondValue;
+        } else if (op == RelationOperator.LESS_EQ) {
+          res = firstValue <= secondValue;
+        } else if (op == RelationOperator.GREATER) {
+          res = firstValue > secondValue;
+        } else if (op == RelationOperator.GREATER_EQ) {
+          res = firstValue >= secondValue;
+        } else if (op == RelationOperator.EQUAL) {
+          res = firstValue == secondValue;
+        } else if (op == RelationOperator.NOT_EQUAL) {
+          res = firstValue != secondValue;
+        } else {
+          throw new Exception("Interpreter Error: unexpected operator in comparison");
+        }
+        return new ScopeTable.ValueTypeWrapper(TypeIndicator.BOOL, new BooleanLiteral(res));
+      } else {
+        throw new Exception("Runtime Error: comparison between non-numeric values");
+      }
     } else if (expr instanceof Factor) {
-
-    } else if (expr instanceof Term) {
-      ScopeTable.ValueTypeWrapper result = new ScopeTable.ValueTypeWrapper(TypeIndicator.INT, new IntegerLiteral(0));
-      List<Expression> unary = ((Term) expr).getUnaryList();о
-      List<MultiplicationOperator> operators = ((Term) expr).getMultiplicationOperatorList();
-      for(int i = 0; i < ((Term) expr).getUnaryList().size(); i++) {
-        ScopeTable.ValueTypeWrapper unaryWrapper = evaluateExpression(unary.get(i));
-        if (operators.get(i) == MultiplicationOperator.MUL) {
-          if(result.getType() == TypeIndicator.INT) {
-            if (unaryWrapper.getType() == TypeIndicator.INT) {
-              int resValue = ((IntegerLiteral) result.getValue()).getValue();
-              int unaryValue = ((IntegerLiteral) unaryWrapper.getValue()).getValue();
-              ((IntegerLiteral) result.getValue()).setValue(resValue * unaryValue);
-            } else if (unaryWrapper.getType() == TypeIndicator.REAL) {
-              int resValue = ((IntegerLiteral) result.getValue()).getValue();
-              double unaryValue = ((RealLiteral) unaryWrapper.getValue()).getValue();
-              result = new ScopeTable.ValueTypeWrapper(TypeIndicator.REAL, new RealLiteral(unaryValue * resValue));
+      List<Expression> terms = ((Factor) expr).getTerms();
+      List<ArithmeticOperator> operators = ((Factor) expr).getArithmeticOperatorList();
+      ScopeTable.ValueTypeWrapper result = evaluateExpression(terms.get(0));
+      for (int i = 1; i < terms.size(); i++) {
+        ScopeTable.ValueTypeWrapper termWrapper = evaluateExpression(terms.get(i));
+        if (operators.get(i) == ArithmeticOperator.ADD) {
+          // Concatenating strings
+          if (result.getType() == TypeIndicator.STRING) {
+            if (termWrapper.getType() == TypeIndicator.STRING) {
+              String resultValue = ((StringLiteral) result.getValue()).getValue();
+              String termValue = ((StringLiteral) termWrapper.getValue()).getValue();
+              String resultingString = resultValue + termValue;
+              ((StringLiteral) result.getValue()).setValue(resultingString);
             } else {
-              throw new Exception("Runtime Error: Trying to apply multplication to non real or integer value");
+              throw new Exception("Runtime Error: Concatenating string value with non string value");
             }
-          } else if (result.getType() == TypeIndicator.REAL) {
-            if (unaryWrapper.getType() == TypeIndicator.INT) {
-              double resValue = ((RealLiteral) result.getValue()).getValue();
-              int unaryValue = ((IntegerLiteral) unaryWrapper.getValue()).getValue();
-              ((RealLiteral) result.getValue()).setValue(resValue * unaryValue);
-            } else if (unaryWrapper.getType() == TypeIndicator.REAL) {
-              double resValue = ((RealLiteral) result.getValue()).getValue();
-              double unaryValue = ((RealLiteral) unaryWrapper.getValue()).getValue();
-              ((RealLiteral) result.getValue()).setValue(resValue * unaryValue);
+            // Concatenating arrays
+          } else if (result.getType() == TypeIndicator.VECTOR) {
+            if (termWrapper.getType() == TypeIndicator.VECTOR) {
+              List<Expression> secondArray = ((ArrayLiteral) termWrapper.getValue()).getExpressionList();
+              ((ArrayLiteral) result.getValue()).getExpressionList().addAll(secondArray);
             } else {
-              throw new Exception("Runtime Error: Trying to apply multplication to non real or integer value");
+              throw new Exception("Runtime Error: Concatenating array value with non array value");
             }
-          } else {
-            throw new Exception("Runtime Error: Trying to apply multplication to non real or integer value");
+            // Concatenating tuples
+          } else if (result.getType() == TypeIndicator.TUPLE) {
+            if (termWrapper.getType() == TypeIndicator.TUPLE) {
+              List<TupleElement> secondTuple = ((TupleLiteral) termWrapper.getValue()).getTupleElementList();
+              for (TupleElement element : secondTuple) {
+                ((TupleLiteral) result.getValue()).addElement(element);
+              }
+            } else {
+              throw new Exception("Runtime Error: Concatenating tuple value with non tuple value");
+            }
           }
         }
+        double resValue = getNumericValue(result);
+        double termValue = getNumericValue(termWrapper);
+        double opResult;
+        if (operators.get(i) == ArithmeticOperator.ADD) {
+          opResult = resValue + termValue;
+        } else if (operators.get(i) == ArithmeticOperator.SUB) {
+          opResult = resValue - termValue;
+        } else {
+          throw new Exception("Interpreter error: NONE operation after first term");
+        }
+        result = getValueTypeWrapper(result, termWrapper, opResult);
       }
+      return result;
+    } else if (expr instanceof Term) {
+      List<Expression> unary = ((Term) expr).getUnaryList();
+      List<MultiplicationOperator> operators = ((Term) expr).getMultiplicationOperatorList();
+      ScopeTable.ValueTypeWrapper result = evaluateExpression(unary.get(0));
+      for (int i = 1; i < unary.size(); i++) {
+        ScopeTable.ValueTypeWrapper unaryWrapper = evaluateExpression(unary.get(i));
+        double resValue = getNumericValue(result);
+        double unaryValue = getNumericValue(unaryWrapper);
+        double opResult;
+        if (operators.get(i) == MultiplicationOperator.MUL) {
+          opResult = resValue * unaryValue;
+        } else if (operators.get(i) == MultiplicationOperator.DIV) {
+          opResult = resValue / unaryValue;
+        } else {
+          throw new Exception("Interpreter error: NONE operation after first unary");
+        }
+        result = getValueTypeWrapper(result, unaryWrapper, opResult);
+      }
+      return result;
     } else if (expr instanceof Unary) {
       if (expr instanceof Is) {
         // Reference is TypeIndicator -> Boolean
@@ -210,15 +286,45 @@ public class Interpreter {
           throw new Exception("Interpreter Error: Primary object is not an instance of any primary");
         }
       } else {
-        // TODO
-        return null;
+        throw new Exception("Interpreter Error: Unary object is not an instance of any Unary child");
       }
     } else {
-      // TODO
-      return null;
+      throw new Exception("Interpreter Error: Unary object is not an instance of any Unary child");
     }
+  }
 
+  private ScopeTable.ValueTypeWrapper getValueTypeWrapper(ScopeTable.ValueTypeWrapper result, ScopeTable.ValueTypeWrapper wrapper, double opResult) throws Exception {
+    if (result.getType() == TypeIndicator.INT) {
+      if (wrapper.getType() == TypeIndicator.INT) {
+        ((IntegerLiteral) result.getValue()).setValue((int) opResult);
+      } else if (wrapper.getType() == TypeIndicator.REAL) {
+        return new ScopeTable.ValueTypeWrapper(TypeIndicator.REAL, new RealLiteral(opResult));
+      } else {
+        throw new Exception("Runtime Error: Trying to apply '*' or '/' to non real or integer value");
+      }
+    } else if (result.getType() == TypeIndicator.REAL) {
+      if (wrapper.getType() == TypeIndicator.INT || wrapper.getType() == TypeIndicator.REAL) {
+        ((RealLiteral) result.getValue()).setValue(opResult);
+      } else {
+        throw new Exception("Runtime Error: Trying to apply '*' or '/' to non real or integer value");
+      }
+    } else {
+      throw new Exception("Runtime Error: Trying to apply '*' or '/' to non real or integer value");
+    }
+    return result;
+  }
 
+  private double getNumericValue(ScopeTable.ValueTypeWrapper wrapper) throws Exception {
+    double result;
+    if (wrapper.getType() == TypeIndicator.REAL) {
+      result = ((RealLiteral) wrapper.getValue()).getValue();
+    } else if (wrapper.getType() == TypeIndicator.INT) {
+      result = ((IntegerLiteral) wrapper.getValue()).getValue();
+    } else {
+      // TODO: Divide Exception in two variants with either * or /
+      throw new Exception("Runtime Error: Trying to apply '*' or '/' to non real or non integer value");
+    }
+    return result;
   }
 
 }
