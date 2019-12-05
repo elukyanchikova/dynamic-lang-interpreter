@@ -144,8 +144,7 @@ public class Tokenizer {
                         flushTokenBuf(tokenBuf);
                     } else {
                         flushTokenBuf(tokenBuf);
-                        tokens.add(new RawToken(read, nLine, nPlace));
-                        nPlace++;
+                        tokenBuf.append(read);
                     }
                     break;
                 }
@@ -169,6 +168,11 @@ public class Tokenizer {
                         tokenBuf.append(read);
                     }
                     break;
+                }
+                else {
+                    if (prevState == states.EQ){
+                        flushTokenBuf(tokenBuf);
+                    }
                 }
 
                 if (read == '(') {
