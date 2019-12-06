@@ -57,8 +57,8 @@ Implementation language - Java. Look for the source code [here](https://github.c
 
 
 ## Team & Contribution
-Maxim Burov - syntaxer, semanter, interpreter
-Arina Fedorovskaya - lexer, interpreter
-Elena Lukyanchikova - lexer, interpreter
-Marsel Shaykhin - syntaxer, interpreter
-SE-17-01
+Maxim Burov - syntaxer, semanter, interpreter    
+Arina Fedorovskaya - lexer, interpreter   
+Elena Lukyanchikova - lexer, interpreter   
+Marsel Shaykhin - syntaxer, interpreter   
+SE-17-01   
