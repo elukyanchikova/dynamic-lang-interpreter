@@ -9,13 +9,13 @@ The interprter (it is an interpreter, not compiler, as the intermediate represen
 The idea of lexical analysis is to take the source code and break it into chunks called tokens. Token - is a string with an assigned and thus identified meaning.
 Toy language states the following types of tokens:
 
-| Token type| Example
-| -------- | -------- | -------- |
-| keyword | **string**, **return**, **print**, **while**, etc.
+| Token type| Example|
+| -------- | -------- |
+| keyword | **string**, **return**, **print**, **while**, etc.}
 | delimiter| **,**, **:**, **(** , **]** |
-|operator| **+**, **or**, **is**, **:=**
-|identifier| **abc123**, **Abc_123** *// no start with digit or '_'*
-|literal | any string
+|operator| **+**, **or**, **is**, **:=**|
+|identifier| **abc123**, **Abc_123** *// no start with digit or '_'*|
+|literal | any string|
 
 At first step, lexer divide all the input code into chunks, similar to what is in the table. At the second, lexer identifies theirs types. The token itself contains the following fields :
 `token(String value, TokenType type, int positionY, int positionX)`*, 
