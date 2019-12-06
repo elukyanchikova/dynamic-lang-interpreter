@@ -40,9 +40,7 @@ AST (find the smallest possible representation of the particular entity) and che
 
 Simplification is done as follows: starting at the root (see picture of Grammar entities hierarchy above), semanter tries to cast the target entity to its "children" entities (based on number and type of parameters) recurcivelly and stop at the "child" that is suitable.
 
-For example, some string **t** is given as an emenent of an array in the source program `var arr = [t, "anotherString"]`. In the AST after syntax analysis **t** will be of class "Statement". At semantic simplification stage this expression will firstly simplified to *Unary*,then to *Primary*, *Literal* and finally *StringLiteral*. Thus, semanter "takes off" the excess entities class wrappers.
-
-If the source program  has no semantic errors, the simplified AST is given to interpreter.
+For example, some string **t** is given as an elemenent of an array in the source program `var arr = [t, "anotherString"]`. In the AST after syntax analysis **t** will be a class "Expression". At semantic simplification stage this expression will firstly simplified to *Unary*,then to *Primary*, *Literal* and finally *StringLiteral*. Thus, semanter "takes off" the excess entities class wrappers.
 
 #### Interpreter 
 The purpose of intepreter is to evaluate all expressions inside the AST in the way which depend on theirs type and add the correspondig result in the scope. Toy language allows "prints", so, if the source program states so, results of differents expressions could be outputed.
