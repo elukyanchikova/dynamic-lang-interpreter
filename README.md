@@ -5,7 +5,7 @@ The **Interpreter for Toy Dynamic Language** has been written as a project for I
 The interprter (it is an interpreter, not compiler, as the intermediate representation is excecuted without translating into machine code) should perform lexical, syntax and semantic analysis successively and then interpret the result to process the output of source program in the Toy language.
 
 ![](https://i.imgur.com/huylKDt.jpg)
-#### Lexical analyser
+#### Lexical analyzer
 The idea of lexical analysis is to take the source code and break it into chunks called tokens. Token - is a string with an assigned and thus identified meaning.
 Toy language states the following types of tokens:
 
@@ -21,19 +21,19 @@ At first step, lexer divide all the input code into chunks, similar to what is i
 `token(String value, TokenType type, int positionY, int positionX)`*, 
 where positionY - line of code, positionX - place in line*
 
-Classified tokens are transferred to Syntax analyser then.
+Classified tokens are transferred to Syntax analyzer then.
 
-#### Syntax analyser
+#### Syntax analyzer
 
-Syntax analyser performs comparing to Toy Language Grammar rules, thus simultaneously checks the validity of target program syntax (if not valid - raise SyntaxError) and build and Abstract Syntax Tree -  tree representation of the abstract syntactic structure of source code. Each node of the tree denotes a construct occurring in the source code.
+Syntax analyzer performs comparing to Toy Language Grammar rules, thus simultaneously checks the validity of target program syntax (if not valid - raise SyntaxError) and build and Abstract Syntax Tree -  tree representation of the abstract syntactic structure of source code. Each node of the tree denotes a construct occurring in the source code.
 
 The hierarchy of Grammar entities is presented as follows. 
 ![](https://i.imgur.com/p6WSzvH.png)
 For more information about Grammar rules, please, check the [Language specification](https://github.com/elukyanchikova/dynamic-lang-interpreter/tree/master/language%20specification)
 
-If source program has no syntax errors, the AST is transferred to Semantic analyser, otherwise, none of the follows stages proceeds.
+If source program has no syntax errors, the AST is transferred to Semantic analyzer, otherwise, none of the follows stages proceeds.
 
-#### Semantic analyser
+#### Semantic analyzer
 
 Semantic analysis stage tends to simplify the
 AST (find the smallest possible representation of the particular entity) and check validity of some operations and calls(for example, undefined or redefined variable).
