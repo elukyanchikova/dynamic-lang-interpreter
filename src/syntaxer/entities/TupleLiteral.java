@@ -45,6 +45,14 @@ public class TupleLiteral extends Literal {
 
     @Override
     public String toString() {
-        return "<Tuple>"; // todo
+        StringBuilder sb = new StringBuilder();
+        sb.append('{');
+        for(TupleElement tupleElement: tupleElementList) {
+            if(tupleElement.getIdentifier() != null) {
+                sb.append(tupleElement.getIdentifier().getName()).append(" := ");
+            }
+            sb.append(tupleElement.getExpression().toString()).append(", ");
+        }
+        return sb.toString().substring(0, sb.length() - 2) + '}';
     }
 }

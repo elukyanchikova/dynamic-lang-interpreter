@@ -155,6 +155,11 @@ public class Interpreter {
                         } else {
                             throw new Exception("Runtime Error: Concatenating tuple value with non tuple value");
                         }
+                    } else {
+                        if ((result.getType() != TypeIndicator.INT && result.getType() != TypeIndicator.REAL)
+                            || (termWrapper.getType() != TypeIndicator.INT && termWrapper.getType() != TypeIndicator.REAL)) {
+                            throw new Exception("Runtime Error: Addition operation with non supported types of operands");
+                        }
                     }
                 }
                 double resValue = getNumericValue(result);

@@ -11,6 +11,10 @@ public class Declaration extends Statement {
         addVariableDefinition(definition);
     }
 
+    public Declaration() {
+        this.mVariableDefinitions = new ArrayList<>();
+    }
+
     public void addVariableDefinition(VariableDefinition variableDefinition) {
         this.mVariableDefinitions.add(variableDefinition);
     }
