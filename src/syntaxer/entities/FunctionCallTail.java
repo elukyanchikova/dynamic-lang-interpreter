@@ -18,4 +18,15 @@ public class FunctionCallTail extends Tail {
     public List<Expression> getArguments() {
         return arguments;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append('(');
+        for(Expression arg: arguments) {
+            sb.append(arg.toString()).append(',');
+        }
+        sb.setCharAt(sb.length() - 1, ')');
+        return sb.toString();
+    }
 }

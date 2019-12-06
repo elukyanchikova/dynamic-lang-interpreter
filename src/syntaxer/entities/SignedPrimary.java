@@ -29,4 +29,9 @@ public class SignedPrimary extends Unary {
     public UnarySign getSign() {
         return sign;
     }
+
+    @Override
+    public String toString() {
+        return "UNSIGNED PRIMARY(" + sign.toString() + primary.toString() + ")";
+    }
 }

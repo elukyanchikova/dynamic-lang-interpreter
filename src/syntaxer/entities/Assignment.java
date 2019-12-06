@@ -26,4 +26,13 @@ public class Assignment extends Statement {
     public void setExpression(Expression expression) {
         this.expression = expression;
     }
+
+    public void setReference(Reference reference) {
+        this.reference = reference;
+    }
+
+    @Override
+    public String toString() {
+        return reference.toString() + " = " + expression.toString();
+    }
 }

@@ -39,4 +39,13 @@ public class ForLoop extends Loop {
     public Body getBody() {
         return body;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for(Statement s: body.getStatements()) {
+            sb.append(s.toString());
+        }
+        return sb.toString();
+    }
 }

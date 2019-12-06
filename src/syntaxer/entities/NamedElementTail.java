@@ -10,4 +10,9 @@ public class NamedElementTail extends Tail {
     public Identifier getIdentifier() {
         return identifier;
     }
+
+    @Override
+    public String toString() {
+        return "takeElement(" + identifier.getName() + ")";
+    }
 }

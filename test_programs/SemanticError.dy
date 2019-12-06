@@ -2,3 +2,5 @@ var a := 2
 var c := 'stringvalue'
 
 print a + c
+
+print 5

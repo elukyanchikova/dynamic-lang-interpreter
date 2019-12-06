@@ -14,4 +14,9 @@ public class ArrayElementTail extends Tail {
     public Expression getExpression() {
         return expression;
     }
+
+    @Override
+    public String toString() {
+        return "[" + expression.toString() + "]";
+    }
 }

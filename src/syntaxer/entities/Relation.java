@@ -36,4 +36,32 @@ public class Relation extends Expression {
     public RelationOperator getOperator() {
         return operator;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(firstFactor.toString());
+        switch (operator) {
+            case EQUAL:
+                sb.append(" = ");
+                break;
+            case NOT_EQUAL:
+                sb.append(" /= ");
+                break;
+            case LESS:
+                sb.append(" < ");
+                break;
+            case LESS_EQ:
+                sb.append(" <= ");
+                break;
+            case GREATER:
+                sb.append(" > ");
+                break;
+            case GREATER_EQ:
+                sb.append(" >= ");
+                break;
+        }
+        sb.append(secondFactor.toString());
+        return sb.toString();
+    }
 }

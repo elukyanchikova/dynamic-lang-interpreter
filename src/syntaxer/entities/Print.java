@@ -25,4 +25,14 @@ public class Print extends Statement {
     public void setExpressions(List<Expression> expressions) {
         this.expressions = expressions;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for(Expression expression: expressions) {
+            sb.append(expression.toString()).append(", ");
+        }
+        sb.deleteCharAt(sb.length() - 1).deleteCharAt(sb.length() - 1);
+        return "print(" + sb.toString() + ")\n";
+    }
 }

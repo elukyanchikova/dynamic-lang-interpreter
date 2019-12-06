@@ -30,6 +30,6 @@ public class ArrayLiteral extends Literal {
         for(Expression expression: expressionList) {
             sb.append(expression.toString()).append(", ");
         }
-        return sb.toString().substring(0, sb.length() - 2) + ']';
+        return sb.toString() + ']';
     }
 }
