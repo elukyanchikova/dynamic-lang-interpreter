@@ -20,4 +20,9 @@ public class Is extends Unary {
     public TypeIndicator getTypeIndicator() {
         return typeIndicator;
     }
+
+    @Override
+    public String toString() {
+        return "IS(" + primary.toString() + ", " + typeIndicator.toString() + ")\n";
+    }
 }

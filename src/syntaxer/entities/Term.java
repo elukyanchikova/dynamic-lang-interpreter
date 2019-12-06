@@ -25,4 +25,18 @@ public class Term extends Expression {
     public List<MultiplicationOperator> getMultiplicationOperatorList() {
         return multiplicationOperatorList;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < unaryList.size(); i++) {
+            switch (multiplicationOperatorList.get(i)) {
+                case MUL: sb.append(" * "); break;
+                case DIV: sb.append(" / "); break;
+                case NONE: break;
+            }
+            sb.append(unaryList.get(i).toString());
+        }
+        return sb.toString();
+    }
 }

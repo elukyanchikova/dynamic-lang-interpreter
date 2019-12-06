@@ -17,6 +17,6 @@ public class StringLiteral extends Literal {
 
     @Override
     public String toString() {
-        return value;
+        return '\'' + value + '\'';
     }
 }

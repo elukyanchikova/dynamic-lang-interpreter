@@ -10,4 +10,9 @@ public class UnnamedElementTail extends Tail {
     public IntegerLiteral getInteger() {
         return integer;
     }
+
+    @Override
+    public String toString() {
+        return "takeElement(" + integer + ")";
+    }
 }

@@ -25,4 +25,18 @@ public class Factor extends Expression {
     public List<ArithmeticOperator> getArithmeticOperatorList() {
         return arithmeticOperatorList;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < terms.size(); i++) {
+            switch (arithmeticOperatorList.get(i)) {
+                case ADD: sb.append(" + "); break;
+                case SUB: sb.append(" - "); break;
+                case NONE: break;
+            }
+            sb.append(terms.get(i).toString());
+        }
+        return sb.toString();
+    }
 }

@@ -39,4 +39,20 @@ public class ForLoop extends Loop {
     public Body getBody() {
         return body;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("for ");
+        if (counter != null)
+            sb.append("(COUNTER: ").append(counter.getName()).append(") ");
+        if (range != null) {
+            sb.append(range.toString());
+        }
+        sb.append("\n");
+        for(Statement s: body.getStatements()) {
+            sb.append(s.toString());
+        }
+        return sb.toString();
+    }
 }

@@ -1,0 +1,7 @@
+var b := 25
+print b
+var a := func(x) is
+    return x + x
+end
+a := a(5)
+print a

@@ -23,4 +23,14 @@ public class Reference extends Primary {
     public List<Tail> getTailList() {
         return tailList;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(identifier.getName());
+        for(Tail tail: tailList) {
+            sb.append(tail.toString());
+        }
+        return sb.toString();
+    }
 }

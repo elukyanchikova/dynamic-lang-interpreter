@@ -40,12 +40,12 @@ public class FunctionalLiteral extends Literal {
         return functionBody;
     }
 
-    @Override
-    public String toString() {
-        return "<Function>";
-    }
-
     public List<Identifier> getArguments() {
         return arguments;
+    }
+
+    @Override
+    public String toString() {
+        return "func(" + getArguments().size() + ")\n" + functionBody.toString();
     }
 }

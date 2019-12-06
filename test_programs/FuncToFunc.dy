@@ -1,0 +1,15 @@
+var apply := func(f, x) is
+    return f(x)
+end
+
+var sq := func(x) is
+    return x * x
+end
+
+var cube := func(x) is
+    return x * x * x
+end
+
+var m1 := 5
+print apply(sq, 5)
+print apply(cube, 5)

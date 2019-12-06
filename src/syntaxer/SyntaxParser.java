@@ -33,7 +33,7 @@ public class SyntaxParser {
             // TODO: Syntax error info showing error line with position
             System.out.println("Syntax error");
             RawToken token = getRawToken(mTokenPosition);
-            System.out.printf("line: %d pos: %d\n value: %s\n", token.line, token.position, token.val);
+            System.out.printf("Line: %d; Pos: %d; Token value: %s\n", token.line, token.position, token.val);
         }
         return program;
     }
@@ -91,9 +91,12 @@ public class SyntaxParser {
         }
 
         /* Then — variable definitions */
-        Declaration declaration = new Declaration(parseVariableDefinition());
+        Declaration declaration = new Declaration();
+        VariableDefinition varDef = parseVariableDefinition();
+        if (varDef != null) declaration.addVariableDefinition(varDef);
         while (getNextToken().equals(",")) {
-            declaration.addVariableDefinition(parseVariableDefinition());
+            varDef = parseVariableDefinition();
+            if(varDef != null) declaration.addVariableDefinition(varDef);
         }
         revertTokenPosition();
         return declaration;

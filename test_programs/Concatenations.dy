@@ -1,0 +1,14 @@
+var tuplePart1 := {a:=3, b:=7}
+var tuplePart2 := {a:=10, c:=6, 15}
+
+print tuplePart1 + tuplePart2
+
+var arrayPart1 := [1, 2, 3 ,4]
+var arrayPart2 := ['5', '6', '7', '8']
+
+print arrayPart1 + arrayPart2
+
+var strPart1 := 'firstPart '
+var strPart2 := "secondPart"
+
+print strPart1 + strPart2

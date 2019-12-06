@@ -25,4 +25,19 @@ public class ExpressionComplex extends Expression {
     public List<LogicalOperator> getLogicalOperator1List() {
         return logicalOperator1List;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < relationList.size(); i++) {
+            switch (logicalOperator1List.get(i)) {
+                case OR: sb.append(" or "); break;
+                case AND: sb.append(" and "); break;
+                case XOR: sb.append(" xor "); break;
+                case NONE: break;
+            }
+            sb.append(relationList.get(i).toString());
+        }
+        return sb.toString();
+    }
 }

@@ -35,4 +35,11 @@ public class If extends Statement {
     public void setCondition(Expression condition) {
         this.condition = condition;
     }
+
+    @Override
+    public String toString() {
+        String res = "if (COND: " + condition.toString() + ") then\n" + thenBody.toString() + "else\n";
+        if (elseBody != null) res = res + elseBody.toString();
+        return res;
+    }
 }

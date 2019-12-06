@@ -30,6 +30,7 @@ public class SemanticAnalyzer {
                     vd.setExpression(expression);
                 }
             } else if (s instanceof Assignment) {
+                simplifyPrimary(((Assignment) s).getReference());
                 ((Assignment) s).setExpression(simplifyExpression(((Assignment) s).getExpression()));
             } else if (s instanceof If) {
                 ((If) s).setCondition(simplifyExpression(((If) s).getCondition()));

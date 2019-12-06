@@ -155,6 +155,11 @@ public class Interpreter {
                         } else {
                             throw new Exception("Runtime Error: Concatenating tuple value with non tuple value");
                         }
+                    } else {
+                        if ((result.getType() != TypeIndicator.INT && result.getType() != TypeIndicator.REAL)
+                            || (termWrapper.getType() != TypeIndicator.INT && termWrapper.getType() != TypeIndicator.REAL)) {
+                            throw new Exception("Runtime Error: Addition operation with non supported types of operands");
+                        }
                     }
                 }
                 double resValue = getNumericValue(result);
@@ -377,13 +382,13 @@ public class Interpreter {
         Assignment assignment = (Assignment) statement;
         ScopeTable.ValueTypeWrapper value = evaluateExpression(((Assignment) statement).getExpression());
         String variableName = assignment.getReference().getIdentifier().getName();
-        ScopeTable.ValueTypeWrapper variable = this.findVariableInScope(variableName);
+        ScopeTable.ValueTypeWrapper variable = evaluateExpression(((Assignment) statement).getReference());
         if (variable == null) {
             throw new RuntimeException(String.format("Runtime exception: variable %s not defined", variableName));
         }
 
         variable.setType(value.getType());
-        variable.setValue(value.getValue());
+        variable.setValue(value.getValue().clone());
     }
 
     /**

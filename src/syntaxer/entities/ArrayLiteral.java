@@ -25,6 +25,11 @@ public class ArrayLiteral extends Literal {
 
     @Override
     public String toString() {
-        return "<Array>"; // todo
+        StringBuilder sb = new StringBuilder();
+        sb.append('[');
+        for(Expression expression: expressionList) {
+            sb.append(expression.toString()).append(", ");
+        }
+        return sb.toString() + ']';
     }
 }

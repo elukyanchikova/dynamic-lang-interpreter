@@ -11,6 +11,10 @@ public class Declaration extends Statement {
         addVariableDefinition(definition);
     }
 
+    public Declaration() {
+        this.mVariableDefinitions = new ArrayList<>();
+    }
+
     public void addVariableDefinition(VariableDefinition variableDefinition) {
         this.mVariableDefinitions.add(variableDefinition);
     }
@@ -24,5 +28,14 @@ public class Declaration extends Statement {
      */
     public List<VariableDefinition> getVariableDefinitions() {
         return mVariableDefinitions;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for(VariableDefinition varDef: mVariableDefinitions) {
+            sb.append(varDef.getIdentifier().getName()).append(" <- ").append(varDef.getExpression()).append('\n');
+        }
+        return sb.toString();
     }
 }

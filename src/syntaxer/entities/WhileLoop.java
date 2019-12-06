@@ -30,4 +30,13 @@ public class WhileLoop extends Loop {
     public void setCondition(Expression condition) {
         this.condition = condition;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for(Statement s: body.getStatements()) {
+            sb.append(s.toString());
+        }
+        return sb.toString();
+    }
 }

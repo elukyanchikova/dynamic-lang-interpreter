@@ -17,4 +17,9 @@ public class Return extends Statement {
     public void setExpression(Expression expression) {
         this.expression = expression;
     }
+
+    @Override
+    public String toString() {
+        return "RETURN(" + expression.toString() + ")\n";
+    }
 }

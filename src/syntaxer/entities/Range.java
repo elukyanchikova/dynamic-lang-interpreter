@@ -24,4 +24,9 @@ public class Range {
     public void setEnd(Expression end) {
         this.end = end;
     }
+
+    @Override
+    public String toString() {
+        return "RANGE(" + start.toString() + ", " + end.toString() + ")";
+    }
 }
