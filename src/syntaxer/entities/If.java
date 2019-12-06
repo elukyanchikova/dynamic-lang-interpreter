@@ -38,7 +38,7 @@ public class If extends Statement {
 
     @Override
     public String toString() {
-        String res = "if" + condition.toString() + "then\n" + thenBody.toString() + "else\n";
+        String res = "if (COND: " + condition.toString() + ") then\n" + thenBody.toString() + "else\n";
         if (elseBody != null) res = res + elseBody.toString();
         return res;
     }
